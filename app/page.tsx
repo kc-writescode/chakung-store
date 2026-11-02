@@ -106,12 +106,12 @@ export default function StoreHomePage() {
         </div>
       </section>
 
-      {/* ── All 13 Products Catalogue ── */}
+      {/* ── Village Products Catalogue ── */}
       <section className="store-section store-section-alt" id="products">
         <div className="store-wrap">
           <div className="store-head">
             <p className="store-subheading">Complete Collection</p>
-            <h2>All 13 village products.</h2>
+            <h2>Village harvest collection.</h2>
             <p className="store-head-desc">
               Heirloom grains, native pulses, pure hill spices, cold-climate seeds, and traditional ferments.
             </p>
@@ -226,7 +226,7 @@ export default function StoreHomePage() {
               <div className="step">
                 <span className="step-num">1</span>
                 <h4>Pick your items</h4>
-                <p>Browse our 13 products and select what your kitchen needs.</p>
+                <p>Browse our products and select what your kitchen needs.</p>
               </div>
               <div className="step">
                 <span className="step-num">2</span>

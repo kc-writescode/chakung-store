@@ -4,10 +4,10 @@ export type Product = {
   localName: string;
   tagline: string;
   description: string;
-  category: "Spice" | "Ferment" | "Grain" | "Legume" | "Seed" | "Root";
+  category: "Spice" | "Ferment" | "Grain" | "Legume" | "Seed";
   price: string;
   weight: string;
-  image?: string;
+  image: string;
   giTag?: boolean;
   organic: boolean;
   featured?: boolean;
@@ -161,91 +161,6 @@ export const products: Product[] = [
     pairingSuggestions: ["Steamed basmati", "Ghee", "Mustard oil pickles"],
   },
   {
-    slug: "ginger-adrak",
-    name: "Ginger",
-    localName: "Adrak · अदुवा (Sikkim Hill Ginger)",
-    tagline: "Fresh from the terraced loam — pungent, fibrous, citrus-bright.",
-    description:
-      "Sikkim is famous for its GI-registered organic ginger. The rhizomes are grown on slopes with natural drainage in certified organic soil. Harvested by hand after the monsoons, they contain high essential oil content, giving an intense heat balanced by zesty lime-like freshness. Sliced, sun-dried, and packed whole.",
-    category: "Root",
-    price: "₹90",
-    weight: "100g pack",
-    giTag: true,
-    organic: true,
-    altitude: "1,000m – 1,600m",
-    harvestSeason: "December – February",
-    tastingNotes: ["Citrus zest", "Sharp clean heat", "Woody floral aroma"],
-    traditionalUses: [
-      "Crushed in mountain tea (adrak chai) to ward off high-altitude chills",
-      "Pounded with garlic for momo stuffing and meat marinades",
-      "Dried into sun-baked sonth for digestive infusions",
-    ],
-    pairingSuggestions: ["Black tea", "Wild mountain honey", "Chilli pickles"],
-  },
-  {
-    slug: "mustard-seeds",
-    name: "Mustard Seeds",
-    localName: "Rayo ko Geda · तोरी",
-    tagline: "Small black mountain seeds — pungent, bright, indispensable.",
-    description:
-      "Cultivated on terraced slopes, these small, black and reddish-brown mustard seeds are the cornerstone of Eastern Himalayan seasoning. When popped in hot ghee or oil, they release a nutty, crackling warmth. Pressed locally in village expellers for raw, aromatic mustard oil.",
-    category: "Seed",
-    price: "₹60",
-    weight: "100g pack",
-    organic: true,
-    altitude: "900m – 1,600m",
-    harvestSeason: "March – April",
-    tastingNotes: ["Pungent crackle", "Nutty warmth", "Clean sharp bite"],
-    traditionalUses: [
-      "Tempering for dal, sauteed leafy greens, and squash",
-      "Ground into paste for fermented radish and cucumber pickles",
-      "Cold-pressed for pure cooking and massage oil",
-    ],
-    pairingSuggestions: ["Sauteed saag", "Gundruk", "Local dal"],
-  },
-  {
-    slug: "rice-bean-masyam",
-    name: "Rice Bean",
-    localName: "Masyam Dal · मस्याम",
-    tagline: "A tiny purple-speckled heritage legume from West Sikkim's high ridges.",
-    description:
-      "Masyam (Vigna umbellata) is a native heritage pulse cultivated for generations in village kitchen gardens across Soreng district. The tiny beans have a beautiful mottled purple-and-cream coat. They cook down into a rich, silky dal with unmatched mineral depth and complete protein profile.",
-    category: "Legume",
-    price: "₹100",
-    weight: "250g pack",
-    organic: true,
-    altitude: "1,200m – 1,800m",
-    harvestSeason: "November – December",
-    tastingNotes: ["Mild sweetness", "Silky broth", "Delicate nutty aroma"],
-    traditionalUses: [
-      "Slow-cooked with ghee, cumin, and dried dalle chilli for evening dal",
-      "Sprouted and tossed in raw mountain salads",
-      "Ground into wholesome flour for steamed dumplings",
-    ],
-    pairingSuggestions: ["Makai roti", "Steamed rice", "Smoky roasted tomato relish"],
-  },
-  {
-    slug: "maize-makai",
-    name: "Maize Seed",
-    localName: "Makai · मकई (Ridge Heritage Corn)",
-    tagline: "Sun-drenched yellow corn from the Chakung slopes.",
-    description:
-      "Heritage flint corn grown along the ridge. After harvest, full cobs are braided together and hung to dry under the overhanging eaves of bamboo houses, protected from rain by the roofline. Once fully cured in the dry winter air, kernels are stripped and ground into golden polenta-style grits for dhindo.",
-    category: "Grain",
-    price: "₹50",
-    weight: "250g bag",
-    organic: true,
-    altitude: "1,100m – 1,700m",
-    harvestSeason: "August – September",
-    tastingNotes: ["Sun-ripened corn sweetness", "Firm toothsome texture", "Clean toasted grain"],
-    traditionalUses: [
-      "Stone-ground for dhindo (the hearty traditional boiled porridge)",
-      "Dry-roasted with bhatmas for traditional mountain trail mix",
-      "Pounded into coarse grits for breakfast porridge",
-    ],
-    pairingSuggestions: ["Gundruk soup", "Chilled village curd", "Spicy chicken jhol"],
-  },
-  {
     slug: "finger-millet-kodo",
     name: "Finger Millet",
     localName: "Kodo · कोदो (Ancient Red Millet)",
@@ -267,27 +182,6 @@ export const products: Product[] = [
       "Breakfast kodo porridge with goat milk and jaggery",
     ],
     pairingSuggestions: ["Warm water in bamboo steins", "Gundruk soup", "Fresh butter"],
-  },
-  {
-    slug: "local-beans-simi",
-    name: "Local Beans",
-    localName: "Simi · सिमी (Himalayan Runner Beans)",
-    tagline: "Flat-podded heirloom beans from village bamboo trellises.",
-    description:
-      "Simi are the broad, flat climbing beans that village families grow along perimeter bamboo fences and sunny porch rails. Plump, creamy, and dried naturally right on the vine in late autumn. Rich in dietary fiber, folates, and slow-burning energy.",
-    category: "Legume",
-    price: "₹85",
-    weight: "250g pack",
-    organic: true,
-    altitude: "1,200m – 1,900m",
-    harvestSeason: "October – November",
-    tastingNotes: ["Creamy centre", "Tender pod", "Fresh vegetal sweetness"],
-    traditionalUses: [
-      "Stewed with sliced potatoes, fresh ginger, and green chillies",
-      "Dry-sauteed in cold-pressed mustard oil with turmeric and cumin",
-      "Simmered in light tomato gravy with mountain herbs",
-    ],
-    pairingSuggestions: ["Steamed buckwheat roti", "Mustard greens", "Dal"],
   },
   {
     slug: "pumpkin-seeds",
@@ -319,4 +213,3 @@ export function getProduct(slug: string): Product | undefined {
 }
 
 export const featuredProducts = products.filter((p) => p.featured);
-
