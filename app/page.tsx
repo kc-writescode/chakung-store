@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { products, featuredProducts } from "@/content/products";
 
 export default function StoreHomePage() {
@@ -48,6 +49,18 @@ export default function StoreHomePage() {
           <div className="featured-grid">
             {featuredProducts.map((product) => (
               <article key={product.slug} className="featured-card">
+                {product.image && (
+                  <Link href={`/${product.slug}`} className="featured-card-photo-wrap">
+                    <Image
+                      src={product.image}
+                      alt={`${product.name} (${product.localName})`}
+                      width={600}
+                      height={600}
+                      className="featured-card-photo"
+                    />
+                  </Link>
+                )}
+
                 <div className="featured-card-header">
                   <div className="featured-badges">
                     <span className="badge category-badge">{product.category}</span>
@@ -108,7 +121,19 @@ export default function StoreHomePage() {
             {products.map((product, idx) => (
               <div key={product.slug} className="catalogue-row">
                 <div className="row-col-num">
-                  <span>0{idx + 1}</span>
+                  {product.image ? (
+                    <Link href={`/${product.slug}`} className="catalogue-thumb-wrap">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={44}
+                        height={44}
+                        className="catalogue-thumb"
+                      />
+                    </Link>
+                  ) : (
+                    <span>0{idx + 1}</span>
+                  )}
                 </div>
                 <div className="row-col-main">
                   <div className="row-title-wrap">
@@ -223,3 +248,4 @@ export default function StoreHomePage() {
     </main>
   );
 }
+

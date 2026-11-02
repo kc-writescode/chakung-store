@@ -7,6 +7,7 @@ export type Product = {
   category: "Spice" | "Ferment" | "Grain" | "Legume" | "Seed" | "Root";
   price: string;
   weight: string;
+  image?: string;
   giTag?: boolean;
   organic: boolean;
   featured?: boolean;
@@ -28,6 +29,7 @@ export const products: Product[] = [
     category: "Spice",
     price: "₹180",
     weight: "50g pouch",
+    image: "/products/dalle-khursani.jpg",
     giTag: true,
     organic: true,
     featured: true,
@@ -51,6 +53,7 @@ export const products: Product[] = [
     category: "Spice",
     price: "₹120",
     weight: "100g jar",
+    image: "/products/turmeric-besar.jpg",
     giTag: true,
     organic: true,
     featured: true,
@@ -74,6 +77,7 @@ export const products: Product[] = [
     category: "Ferment",
     price: "₹150",
     weight: "100g pack",
+    image: "/products/gundruk.jpg",
     giTag: true,
     organic: true,
     featured: true,
@@ -97,6 +101,7 @@ export const products: Product[] = [
     category: "Grain",
     price: "₹95",
     weight: "250g pack",
+    image: "/products/buckwheat-phapar.jpg",
     organic: true,
     featured: true,
     altitude: "1,400m – 2,200m",
@@ -119,6 +124,7 @@ export const products: Product[] = [
     category: "Legume",
     price: "₹70",
     weight: "250g pouch",
+    image: "/products/soybean-bhatmas.jpg",
     organic: true,
     featured: true,
     altitude: "1,000m – 1,700m",
@@ -141,6 +147,7 @@ export const products: Product[] = [
     category: "Legume",
     price: "₹110",
     weight: "250g pack",
+    image: "/products/rajma.jpg",
     organic: true,
     featured: true,
     altitude: "1,300m – 1,900m",
@@ -248,7 +255,9 @@ export const products: Product[] = [
     category: "Grain",
     price: "₹80",
     weight: "250g pack",
+    image: "/products/finger-millet-kodo.jpg",
     organic: true,
+    featured: true,
     altitude: "1,000m – 1,800m",
     harvestSeason: "October – November",
     tastingNotes: ["Earthy malt", "Nutty depth", "Subtle sourdough nuance"],
@@ -290,7 +299,9 @@ export const products: Product[] = [
     category: "Seed",
     price: "₹140",
     weight: "100g pack",
+    image: "/products/pumpkin-seeds.jpg",
     organic: true,
+    featured: true,
     altitude: "1,100m – 1,700m",
     harvestSeason: "November – January",
     tastingNotes: ["Buttery crunch", "Toasted sunflower undertone", "Mild mineral finish"],
@@ -308,3 +319,4 @@ export function getProduct(slug: string): Product | undefined {
 }
 
 export const featuredProducts = products.filter((p) => p.featured);
+

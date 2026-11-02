@@ -32,3 +32,4 @@ In 2016, Sikkim became the **first 100% certified organic state in the world**, 
 npm install
 npm run dev
 ```
+

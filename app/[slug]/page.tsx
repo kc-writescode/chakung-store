@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { getProduct, products } from "@/content/products";
 
@@ -33,7 +34,10 @@ export default async function ProductDetailPage({
   const { slug } = await params;
   const product = getProduct(slug);
 
-  if (!product) notFound();
+  if (!product) {
+    notFound();
+    return null;
+  }
 
   const waOrderLink = `https://wa.me/916295034036?text=${encodeURIComponent(
     `Hello Chakung Store, I would like to order ${product.name} (${product.localName}) - ${product.price} for ${product.weight}. Please share payment details and dispatch time to my pincode.`
@@ -61,17 +65,30 @@ export default async function ProductDetailPage({
                 {product.organic && <span className="badge organic-badge">100% Organic</span>}
               </div>
 
-              <div className="visual-graphic">
-                <span className="graphic-icon">
-                  {product.category === "Spice" ? "🌶️" :
-                   product.category === "Ferment" ? "🥬" :
-                   product.category === "Grain" ? "🌾" :
-                   product.category === "Legume" ? "🫘" :
-                   product.category === "Seed" ? "🌻" : "🫚"}
-                </span>
-                <p className="graphic-name">{product.name}</p>
-                <p className="graphic-local">{product.localName}</p>
-              </div>
+              {product.image ? (
+                <div className="product-visual-image-wrap">
+                  <Image
+                    src={product.image}
+                    alt={`${product.name} - Chakung Sikkim Produce`}
+                    width={800}
+                    height={800}
+                    priority
+                    className="product-visual-image"
+                  />
+                </div>
+              ) : (
+                <div className="visual-graphic">
+                  <span className="graphic-icon">
+                    {product.category === "Spice" ? "🌶️" :
+                     product.category === "Ferment" ? "🥬" :
+                     product.category === "Grain" ? "🌾" :
+                     product.category === "Legume" ? "🫘" :
+                     product.category === "Seed" ? "🌻" : "🫚"}
+                  </span>
+                  <p className="graphic-name">{product.name}</p>
+                  <p className="graphic-local">{product.localName}</p>
+                </div>
+              )}
 
               <div className="visual-origin-meta">
                 <div className="meta-point">
@@ -159,3 +176,4 @@ export default async function ProductDetailPage({
     </main>
   );
 }
+
