@@ -1,26 +1,10 @@
 import type { Metadata } from "next";
-import { Fraunces, Familjen_Grotesk } from "next/font/google";
 import Script from "next/script";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/context/cart-context";
 import { CartDrawer } from "@/components/cart-drawer";
 import "./globals.css";
-
-const display = Fraunces({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["SOFT", "WONK", "opsz"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const sans = Familjen_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-sans",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://store.chakung.com"),
@@ -47,7 +31,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <CartProvider>
           <Header />

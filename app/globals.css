@@ -17,8 +17,8 @@
   --green-badge: #2a6040;
   --green-bg: rgba(42, 96, 64, 0.12);
 
-  --serif: var(--font-display), "Iowan Old Style", Palatino, Georgia, serif;
-  --sans: var(--font-sans), "Familjen Grotesk", "Avenir Next", -apple-system, sans-serif;
+  --serif: "Fraunces", "Iowan Old Style", Palatino, Georgia, serif;
+  --sans: "Familjen Grotesk", "Avenir Next", -apple-system, sans-serif;
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
 }
