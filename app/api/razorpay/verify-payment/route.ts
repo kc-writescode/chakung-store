@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { sendStoreOwnerNotification, sendCustomerConfirmation } from "@/lib/email";
+import { saveOrder } from "@/lib/orders";
+import { sendPushNotificationToAll } from "@/lib/push";
 
 export async function POST(request: Request) {
   try {
@@ -35,11 +37,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Trigger email notifications asynchronously if order details were provided
+    // Save order & trigger notifications if order details were provided
     if (orderDetails && orderDetails.customer && orderDetails.items) {
-      const emailPayload = {
+      const orderPayload = {
+        id: razorpay_order_id,
         orderId: razorpay_order_id,
         paymentId: razorpay_payment_id,
+        createdAt: new Date().toISOString(),
+        status: "Paid / Pending Pack" as const,
         customer: orderDetails.customer,
         items: orderDetails.items,
         subtotal: orderDetails.subtotal,
@@ -47,14 +52,26 @@ export async function POST(request: Request) {
         total: orderDetails.total,
       };
 
-      // We await or dispatch in background with error catching so an email error doesn't break verified checkout
+      // 1. Save order to persistent store for staff dashboard tracking
+      try {
+        await saveOrder(orderPayload);
+      } catch (saveErr) {
+        console.error("Order save error:", saveErr);
+      }
+
+      // 2. Dispatch email alerts and web push notifications in parallel
       try {
         await Promise.allSettled([
-          sendStoreOwnerNotification(emailPayload),
-          sendCustomerConfirmation(emailPayload),
+          sendStoreOwnerNotification(orderPayload),
+          sendCustomerConfirmation(orderPayload),
+          sendPushNotificationToAll({
+            title: `🏔️ New Order #${razorpay_order_id.slice(-6)} · ₹${orderPayload.total}`,
+            body: `${orderPayload.customer.name} ordered ${orderPayload.items.length} items. Tap to view packing list.`,
+            url: "/staff",
+          }),
         ]);
-      } catch (mailErr) {
-        console.error("Order notification email dispatch error:", mailErr);
+      } catch (notifyErr) {
+        console.error("Notification dispatch error:", notifyErr);
       }
     }
 

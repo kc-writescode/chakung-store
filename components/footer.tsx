@@ -44,6 +44,8 @@ export function Footer() {
             <Link href="https://chakung.com">chakung.com</Link>
             <span>·</span>
             <Link href="https://restro.chakung.com">restro.chakung.com</Link>
+            <span>·</span>
+            <Link href="/staff" className="footer-staff-link">Staff Portal 🔒</Link>
           </div>
         </div>
       </div>
