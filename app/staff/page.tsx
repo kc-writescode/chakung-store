@@ -31,6 +31,8 @@ export default function StaffPage() {
   const [testPushMsg, setTestPushMsg] = useState("");
   const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
   const [shiprocketLoading, setShiprocketLoading] = useState<Record<string, boolean>>({});
+  const [syncingRazorpay, setSyncingRazorpay] = useState(false);
+  const [syncMessage, setSyncMessage] = useState("");
 
   // 1. Check initial staff session
   useEffect(() => {
@@ -69,6 +71,26 @@ export default function StaffPage() {
       console.error("Failed to load orders:", err);
     } finally {
       setLoadingOrders(false);
+    }
+  };
+
+  const handleSyncRazorpay = async () => {
+    setSyncingRazorpay(true);
+    setSyncMessage("Connecting to Razorpay to import orders...");
+    try {
+      const res = await fetch("/api/staff/sync-razorpay", { method: "POST" });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSyncMessage(`✓ Synced! Found ${data.importedCount} new order(s) from Razorpay.`);
+        fetchOrders();
+      } else {
+        setSyncMessage(`⚠️ Sync error: ${data.error}`);
+      }
+    } catch {
+      setSyncMessage("⚠️ Could not connect to Razorpay.");
+    } finally {
+      setSyncingRazorpay(false);
+      setTimeout(() => setSyncMessage(""), 6000);
     }
   };
 
@@ -375,6 +397,12 @@ export default function StaffPage() {
           <div className="test-push-banner">{testPushMsg}</div>
         )}
 
+        {syncMessage && (
+          <div className="test-push-banner" style={{ background: "#ecfdf5", borderColor: "#a7f3d0", color: "#065f46" }}>
+            {syncMessage}
+          </div>
+        )}
+
         {/* Stats Row */}
         <div className="staff-stats-grid">
           <div className="staff-stat-card">
@@ -440,6 +468,16 @@ export default function StaffPage() {
               Dispatched ({dispatchedCount})
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={handleSyncRazorpay}
+            disabled={syncingRazorpay}
+            className="sync-razorpay-btn"
+            title="Import all paid transactions from Razorpay"
+          >
+            {syncingRazorpay ? "Syncing..." : "🔄 Sync with Razorpay"}
+          </button>
 
           <button
             type="button"

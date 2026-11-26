@@ -3047,3 +3047,20 @@ h1, h2, h3, h4 {
   text-decoration: underline;
   font-size: 12px;
 }
+
+
+.sync-razorpay-btn {
+  background: var(--forest);
+  color: var(--cream);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 150ms var(--ease);
+}
+
+.sync-razorpay-btn:hover {
+  opacity: 0.9;
+}
