@@ -39,9 +39,9 @@ export default function CheckoutPage() {
     }
   }, []);
 
-  const freeShippingThreshold = 500;
-  const freeShippingMet = subtotal >= freeShippingThreshold;
-  const shippingFee = items.length === 0 ? 0 : freeShippingMet ? 0 : 70;
+  const shippingDiscountThreshold = 500;
+  const shippingDiscountMet = subtotal >= shippingDiscountThreshold;
+  const shippingFee = items.length === 0 ? 0 : shippingDiscountMet ? 50 : 70;
   const grandTotal = subtotal + shippingFee;
 
   const handleInputChange = (
@@ -484,16 +484,15 @@ export default function CheckoutPage() {
                     <div className="calc-row">
                       <span>
                         Speed Post Shipping
-                        {freeShippingMet && (
-                          <span className="free-badge-pill">Free shipping applied</span>
+                        {shippingDiscountMet && (
+                          <span className="free-badge-pill">₹50 discounted rate applied</span>
                         )}
                       </span>
                       <span className="calc-val">
-                        {shippingFee === 0 ? (
-                          <span className="text-free">FREE</span>
-                        ) : (
-                          `₹${shippingFee}`
+                        {shippingDiscountMet && (
+                          <span style={{ textDecoration: "line-through", color: "var(--muted)", marginRight: "6px", fontSize: "12px" }}>₹70</span>
                         )}
+                        ₹{shippingFee}
                       </span>
                     </div>
                     <div className="calc-row total-row">

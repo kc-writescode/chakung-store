@@ -22,10 +22,10 @@ export function CartDrawer() {
 
   if (!isCartOpen) return null;
 
-  const freeShippingThreshold = 500;
-  const freeShippingMet = subtotal >= freeShippingThreshold;
-  const freeShippingRemaining = Math.max(0, freeShippingThreshold - subtotal);
-  const shippingFee = items.length === 0 ? 0 : freeShippingMet ? 0 : 70;
+  const shippingDiscountThreshold = 500;
+  const shippingDiscountMet = subtotal >= shippingDiscountThreshold;
+  const shippingDiscountRemaining = Math.max(0, shippingDiscountThreshold - subtotal);
+  const shippingFee = items.length === 0 ? 0 : shippingDiscountMet ? 50 : 70;
   const grandTotal = subtotal + shippingFee;
 
   const handleCheckout = () => {
@@ -60,21 +60,21 @@ export function CartDrawer() {
           </button>
         </div>
 
-        {/* Free Shipping Progress */}
+        {/* Shipping Discount Banner */}
         <div className="cart-shipping-banner">
-          {freeShippingMet ? (
+          {shippingDiscountMet ? (
             <div className="free-shipping-tag success">
-              <span>🎉 You unlocked <strong>FREE Speed Post Delivery</strong> across India!</span>
+              <span>🎉 You unlocked <strong>discounted ₹50 Speed Post Delivery</strong> across India!</span>
             </div>
           ) : (
             <div className="free-shipping-tag progress">
               <span>
-                Add <strong>₹{freeShippingRemaining}</strong> more for <strong>FREE India-wide shipping</strong>
+                Add <strong>₹{shippingDiscountRemaining}</strong> more for discounted <strong>₹50 shipping</strong> (normally ₹70)
               </span>
               <div className="progress-track">
                 <div
                   className="progress-fill"
-                  style={{ width: `${Math.min(100, (subtotal / freeShippingThreshold) * 100)}%` }}
+                  style={{ width: `${Math.min(100, (subtotal / shippingDiscountThreshold) * 100)}%` }}
                 />
               </div>
             </div>
@@ -178,11 +178,10 @@ export function CartDrawer() {
             <div className="cart-summary-line">
               <span>Speed Post Shipping</span>
               <span className="summary-val">
-                {shippingFee === 0 ? (
-                  <span className="text-free">FREE</span>
-                ) : (
-                  `₹${shippingFee}`
+                {shippingDiscountMet && (
+                  <span style={{ textDecoration: "line-through", color: "var(--muted)", marginRight: "6px" }}>₹70</span>
                 )}
+                ₹{shippingFee}
               </span>
             </div>
             <div className="cart-summary-line cart-total-line">

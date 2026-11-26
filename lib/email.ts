@@ -134,7 +134,7 @@ export async function sendStoreOwnerNotification(order: OrderEmailData) {
         <!-- Totals -->
         <div style="border-top: 2px solid #e0d5c4; padding-top: 12px; text-align: right; font-size: 14px;">
           <p style="margin: 4px 0; color: #666;">Subtotal: <strong>₹${order.subtotal}</strong></p>
-          <p style="margin: 4px 0; color: #666;">Shipping (Speed Post): <strong>${order.shipping === 0 ? "FREE" : `₹${order.shipping}`}</strong></p>
+          <p style="margin: 4px 0; color: #666;">Shipping (Speed Post): <strong>₹${order.shipping}</strong></p>
           <p style="margin: 8px 0 0; font-size: 18px; font-weight: bold; color: #1a3328;">
             Total Collected: ₹${order.total}
           </p>
@@ -234,7 +234,7 @@ export async function sendCustomerConfirmation(order: OrderEmailData) {
         <!-- Totals -->
         <div style="border-top: 2px solid #e0d5c4; padding-top: 12px; text-align: right; font-size: 14px; margin-bottom: 28px;">
           <p style="margin: 4px 0; color: #666;">Subtotal: <strong>₹${order.subtotal}</strong></p>
-          <p style="margin: 4px 0; color: #666;">Speed Post Shipping: <strong>${order.shipping === 0 ? "FREE" : `₹${order.shipping}`}</strong></p>
+          <p style="margin: 4px 0; color: #666;">Speed Post Shipping: <strong>₹${order.shipping}</strong></p>
           <p style="margin: 8px 0 0; font-size: 18px; font-weight: bold; color: #1a3328;">
             Total Paid: ₹${order.total}
           </p>

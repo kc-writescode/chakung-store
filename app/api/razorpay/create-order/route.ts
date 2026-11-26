@@ -51,8 +51,8 @@ export async function POST(request: Request) {
       });
     }
 
-    // Shipping logic: Free shipping on orders ₹500 or above, otherwise ₹70 Speed Post flat rate
-    const shipping = subtotal >= 500 ? 0 : 70;
+    // Shipping logic: ₹50 discounted shipping on orders ₹500 or above, otherwise ₹70 Speed Post flat rate
+    const shipping = subtotal >= 500 ? 50 : 70;
     const total = subtotal + shipping;
     const amountInPaise = Math.round(total * 100);
 
