@@ -2992,3 +2992,58 @@ h1, h2, h3, h4 {
     gap: 16px;
   }
 }
+
+
+/* Shiprocket Actions in Staff Dashboard */
+.shiprocket-action-row {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-shiprocket {
+  background: #733dd9;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms var(--ease);
+}
+
+.btn-shiprocket:hover {
+  background: #5b28bf;
+}
+
+.shiprocket-active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #f3ebff;
+  color: #5b28bf;
+  border: 1px solid #d8baff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+
+.shipment-id-tag {
+  background: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.link-shiprocket-panel {
+  color: #5b28bf;
+  text-decoration: underline;
+  font-size: 12px;
+}

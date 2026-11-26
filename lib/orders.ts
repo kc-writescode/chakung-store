@@ -8,6 +8,9 @@ export interface StoredOrder {
   createdAt: string;
   status: "Paid / Pending Pack" | "Packed" | "Dispatched via Speed Post" | "Delivered";
   trackingNumber?: string;
+  shiprocketOrderId?: number | string;
+  shiprocketShipmentId?: number | string;
+  shiprocketAwb?: string;
   customer: {
     name: string;
     email: string;
@@ -91,7 +94,13 @@ export async function saveOrder(order: StoredOrder): Promise<void> {
 
 export async function updateOrderStatus(
   orderId: string,
-  updates: { status?: StoredOrder["status"]; trackingNumber?: string }
+  updates: {
+    status?: StoredOrder["status"];
+    trackingNumber?: string;
+    shiprocketOrderId?: number | string;
+    shiprocketShipmentId?: number | string;
+    shiprocketAwb?: string;
+  }
 ): Promise<StoredOrder | null> {
   const currentOrders = await getAllOrders();
   const order = currentOrders.find((o) => o.id === orderId);
@@ -99,6 +108,9 @@ export async function updateOrderStatus(
 
   if (updates.status) order.status = updates.status;
   if (updates.trackingNumber !== undefined) order.trackingNumber = updates.trackingNumber.trim();
+  if (updates.shiprocketOrderId !== undefined) order.shiprocketOrderId = updates.shiprocketOrderId;
+  if (updates.shiprocketShipmentId !== undefined) order.shiprocketShipmentId = updates.shiprocketShipmentId;
+  if (updates.shiprocketAwb !== undefined) order.shiprocketAwb = updates.shiprocketAwb;
 
   await saveOrder(order);
   return order;

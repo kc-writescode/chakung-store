@@ -30,6 +30,7 @@ export default function StaffPage() {
   const [pushLoading, setPushLoading] = useState(false);
   const [testPushMsg, setTestPushMsg] = useState("");
   const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
+  const [shiprocketLoading, setShiprocketLoading] = useState<Record<string, boolean>>({});
 
   // 1. Check initial staff session
   useEffect(() => {
@@ -216,6 +217,28 @@ export default function StaffPage() {
     }
   };
 
+  const handleCreateShiprocket = async (orderId: string) => {
+    setShiprocketLoading((prev) => ({ ...prev, [orderId]: true }));
+    try {
+      const res = await fetch("/api/shiprocket/create-shipment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        alert(`🚀 Order created on Shiprocket!\nShiprocket Order ID: ${data.shiprocketOrderId}\nShipment ID: ${data.shipmentId}`);
+        fetchOrders();
+      } else {
+        alert(`Shiprocket error: ${data.error}`);
+      }
+    } catch (err: any) {
+      alert(`Failed: ${err.message}`);
+    } finally {
+      setShiprocketLoading((prev) => ({ ...prev, [orderId]: false }));
+    }
+  };
+
   // Filtered orders list
   const filteredOrders = orders.filter((order) => {
     const matchesStatus =
@@ -288,9 +311,7 @@ export default function StaffPage() {
                 {isLoggingIn ? "Verifying..." : "Unlock Staff Portal"}
               </button>
 
-              <div className="pin-hint-box">
-                <small>🔒 Default PIN is <code>1400</code> (can be customized via <code>STAFF_PIN</code> in <code>.env.local</code>).</small>
-              </div>
+          
             </form>
           </div>
         </div>
@@ -554,10 +575,38 @@ export default function StaffPage() {
                       </div>
                     </div>
 
-                    {/* Footer: India Post Speed Post Consignment Number */}
+                    {/* Footer: Shiprocket 1-Click Shipping & Speed Post */}
                     <div className="order-card-footer">
+                      <div className="shiprocket-action-row">
+                        {order.shiprocketOrderId ? (
+                          <div className="shiprocket-active-badge">
+                            <span>🚀 Shiprocket Order #{order.shiprocketOrderId}</span>
+                            {order.shiprocketShipmentId && (
+                              <span className="shipment-id-tag">Shipment #{order.shiprocketShipmentId}</span>
+                            )}
+                            <a
+                              href="https://app.shiprocket.in/orders"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="link-shiprocket-panel"
+                            >
+                              Manage in Shiprocket ↗
+                            </a>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleCreateShiprocket(order.id)}
+                            disabled={shiprocketLoading[order.id]}
+                            className="btn-shiprocket"
+                          >
+                            {shiprocketLoading[order.id] ? "Creating on Shiprocket..." : "🚀 Ship via Shiprocket"}
+                          </button>
+                        )}
+                      </div>
+
                       <div className="tracking-edit-row">
-                        <label htmlFor={`track-${order.id}`}>India Post Speed Post Tracking:</label>
+                        <label htmlFor={`track-${order.id}`}>Manual Tracking / Speed Post:</label>
                         <div className="tracking-input-wrap">
                           <input
                             id={`track-${order.id}`}
