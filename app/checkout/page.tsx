@@ -126,6 +126,10 @@ export default function CheckoutPage() {
       };
       sessionStorage.setItem("last_order_details", JSON.stringify(pendingOrderContext));
 
+      // Clean phone number for Razorpay (clean 10 digits for Indian mobile numbers)
+      const rawDigits = customer.phone.replace(/[^0-9]/g, "");
+      const cleanContact = rawDigits.length >= 10 ? rawDigits.slice(-10) : rawDigits;
+
       // 2. Configure and open Razorpay Checkout modal
       const options = {
         key: orderData.keyId,
@@ -136,9 +140,9 @@ export default function CheckoutPage() {
         image: "https://store.chakung.com/products/dalle-khursani.jpg",
         order_id: orderData.orderId,
         prefill: {
-          name: customer.name,
-          email: customer.email,
-          contact: customer.phone,
+          name: customer.name.trim(),
+          email: customer.email.trim(),
+          contact: cleanContact,
         },
         notes: {
           address: `${customer.address}, ${customer.city}, ${customer.state} - ${customer.pincode}`,
