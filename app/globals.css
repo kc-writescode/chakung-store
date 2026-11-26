@@ -87,10 +87,17 @@ h1, h2, h3, h4 {
 
 .store-brand {
   display: flex;
-  align-items: baseline;
-  gap: 6px;
+  align-items: center;
   text-decoration: none;
   flex-shrink: 0;
+}
+
+.store-brand-logo {
+  height: 44px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  display: block;
 }
 
 .store-brand-main {

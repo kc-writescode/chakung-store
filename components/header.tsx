@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/cart-context";
 
@@ -12,8 +13,14 @@ export function Header() {
     <header className="store-header">
       <div className="store-wrap store-header-inner">
         <Link href="/" className="store-brand" aria-label="Chakung Store Home">
-          <span className="store-brand-main">Chakung</span>
-          <span className="store-brand-sub">Store</span>
+          <Image
+            src="/chakung-logo.png"
+            alt="Chakung Store"
+            width={84}
+            height={42}
+            className="store-brand-logo"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}
