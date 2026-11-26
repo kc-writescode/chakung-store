@@ -84,7 +84,7 @@ export function Header() {
               <nav className="store-menu-links">
                 <Link href="/#products" className="menu-link-item">
                   <span>Catalogue</span>
-                  <span className="menu-sub">8 ridge products</span>
+                  <span className="menu-sub">12 ridge products</span>
                 </Link>
                 <Link href="/#sikkim-organic" className="menu-link-item">
                   <span>Why Organic</span>

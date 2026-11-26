@@ -50,7 +50,7 @@ export default function StoreHomePage() {
           <div className="featured-grid">
             {featuredProducts.map((product) => (
               <article key={product.slug} className="featured-card">
-                {product.image && (
+                {product.image ? (
                   <Link href={`/${product.slug}`} className="featured-card-photo-wrap">
                     <Image
                       src={product.image}
@@ -59,6 +59,16 @@ export default function StoreHomePage() {
                       height={600}
                       className="featured-card-photo"
                     />
+                  </Link>
+                ) : (
+                  <Link href={`/${product.slug}`} className="featured-card-photo-wrap featured-fallback-banner">
+                    <span className="fallback-banner-icon">
+                      {product.category === "Grain" ? "🌾" :
+                       product.category === "Legume" ? "🫘" :
+                       product.category === "Spice" ? "🌶️" :
+                       product.category === "Ferment" ? "🥬" : "🌻"}
+                    </span>
+                    <span className="fallback-banner-title">{product.name}</span>
                   </Link>
                 )}
 
@@ -126,7 +136,14 @@ export default function StoreHomePage() {
                       />
                     </Link>
                   ) : (
-                    <span>0{idx + 1}</span>
+                    <Link href={`/${product.slug}`} className="catalogue-thumb-wrap catalogue-thumb-fallback">
+                      <span>
+                        {product.category === "Grain" ? "🌾" :
+                         product.category === "Legume" ? "🫘" :
+                         product.category === "Spice" ? "🌶️" :
+                         product.category === "Ferment" ? "🥬" : "🌻"}
+                      </span>
+                    </Link>
                   )}
                 </div>
                 <div className="row-col-main">
