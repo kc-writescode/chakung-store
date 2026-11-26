@@ -213,3 +213,8 @@ export function getProduct(slug: string): Product | undefined {
 }
 
 export const featuredProducts = products.filter((p) => p.featured);
+
+export function getPriceNumber(priceStr: string): number {
+  const num = parseInt(priceStr.replace(/[^0-9]/g, ""), 10);
+  return isNaN(num) ? 0 : num;
+}

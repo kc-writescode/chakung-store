@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { products, featuredProducts } from "@/content/products";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 export default function StoreHomePage() {
   const whatsappAll = "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20would%20like%20to%20order%20organic%20produce.";
@@ -90,14 +91,7 @@ export default function StoreHomePage() {
                     <Link href={`/${product.slug}`} className="view-link">
                       Details →
                     </Link>
-                    <a
-                      href={`https://wa.me/916295034036?text=${encodeURIComponent(`Hello, I would like to order ${product.name} (${product.weight} - ${product.price}) from Chakung Store.`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="order-btn"
-                    >
-                      Order
-                    </a>
+                    <AddToCartButton product={product} />
                   </div>
                 </div>
               </article>
@@ -153,14 +147,7 @@ export default function StoreHomePage() {
                   <span className="weight-val">{product.weight}</span>
                 </div>
                 <div className="row-col-action">
-                  <a
-                    href={`https://wa.me/916295034036?text=${encodeURIComponent(`Hello, I would like to order ${product.name} (${product.price} - ${product.weight}) from Chakung Store.`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="row-order-btn"
-                  >
-                    Order on WhatsApp
-                  </a>
+                  <AddToCartButton product={product} variant="compact" />
                 </div>
               </div>
             ))}
@@ -174,17 +161,20 @@ export default function StoreHomePage() {
           <div className="story-grid">
             <div className="story-copy">
               <p className="store-subheading" style={{ color: "#e7b08a" }}>
-                The Sikkim Standard
+                About Chakung &amp; The Sikkim Standard
               </p>
-              <h2>India&apos;s first 100% organic state.</h2>
+              <h2>Chakung is not a place you just visit. It&apos;s a place you feel.</h2>
               <p>
-                In 2016, Sikkim made global agricultural history by becoming the world&apos;s first state to transition completely to organic farming. Over 75,000 hectares of agricultural land were certified chemical-free, banning synthetic fertilisers, toxic pesticides, and GMO seeds across the state.
-              </p>
-              <p>
-                Because of Chakung&apos;s elevation (1,400m), cool Himalayan microclimate, and terraced mountain topography, crops grow slowly with deep roots in mineral-rich soil irrigated by clear mountain springs.
+                Tucked away in Soreng District, West Sikkim, at around 4,500 ft, Chakung is a small mountain village where clouds sleep in the valleys, prayer flags flutter on every ridge, and every morning opens with a view of the snow-capped Kanchenjunga range.
               </p>
               <p>
-                Products like <strong>Dalle Khursani</strong>, <strong>Sikkim Turmeric</strong>, <strong>Large Cardamom</strong>, and <strong>Gundruk</strong> carry official Geographical Indication (GI) tags from the Government of India, legally protecting the unique biodiversity and culinary heritage of this ridge.
+                It&apos;s still pure Sikkim — no crowd, no noise. Just terraced farms, bamboo houses, pine forests, old monasteries, and people who greet you like family.
+              </p>
+              <p>
+                In 2016, Sikkim made global agricultural history by becoming the world&apos;s first 100% certified organic state. Over 75,000 hectares of agricultural land were certified chemical-free, banning synthetic fertilisers, toxic pesticides, and GMO seeds across the state.
+              </p>
+              <p>
+                Products like <strong>Dalle Khursani</strong>, <strong>Sikkim Turmeric</strong>, and <strong>Gundruk</strong> carry official Geographical Indication (GI) tags from the Government of India, protecting the heritage and pure terroir of this ridge.
               </p>
             </div>
 

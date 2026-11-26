@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getProduct, products } from "@/content/products";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -157,17 +158,21 @@ export default async function ProductDetailPage({
 
             {/* Order Action */}
             <div className="product-action-box">
-              <a
-                href={waOrderLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="store-btn-solid store-btn-large"
-                style={{ width: "100%", justifyContent: "center" }}
-              >
-                Order on WhatsApp · {product.price}
-              </a>
+              <AddToCartButton product={product} showBuyNow />
+
+              <div className="alt-order-wrap">
+                <a
+                  href={waOrderLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wa-subtle-link"
+                >
+                  💬 Or message on WhatsApp to order
+                </a>
+              </div>
+
               <p className="order-guarantee-note">
-                🌿 Certified organic origin. Direct from village farmers in Chakung. We ship across India via Speed Post and express courier.
+                🌿 100% certified organic origin. Direct from village farmers in Chakung, West Sikkim. Secure online payment powered by Razorpay (UPI, Google Pay, Cards, Netbanking) with India Post Speed Post tracking.
               </p>
             </div>
           </div>

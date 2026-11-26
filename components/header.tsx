@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useCart } from "@/context/cart-context";
 
 export function Header() {
+  const { totalItems, setIsCartOpen } = useCart();
   const whatsappAll =
     "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20would%20like%20to%20order%20organic%20produce.";
 
@@ -22,7 +26,7 @@ export function Header() {
             rel="noopener noreferrer"
             className="store-order-link"
           >
-            Order
+            WhatsApp
           </a>
           <a
             href="https://chakung.com"
@@ -32,17 +36,43 @@ export function Header() {
           >
             The Homestay ↗
           </a>
+
+          {/* Cart Button */}
+          <button
+            type="button"
+            onClick={() => setIsCartOpen(true)}
+            className="store-cart-btn"
+            aria-label={`Open shopping cart (${totalItems} items)`}
+          >
+            <span className="cart-icon">🛒</span>
+            <span>Cart</span>
+            {totalItems > 0 && (
+              <span className="cart-badge">{totalItems}</span>
+            )}
+          </button>
         </nav>
 
         {/* Mobile Navigation */}
         <div className="store-mobile-nav">
+          <button
+            type="button"
+            onClick={() => setIsCartOpen(true)}
+            className="store-cart-btn store-mobile-cart-btn"
+            aria-label={`Open shopping cart (${totalItems} items)`}
+          >
+            <span className="cart-icon">🛒</span>
+            {totalItems > 0 && (
+              <span className="cart-badge">{totalItems}</span>
+            )}
+          </button>
+
           <a
             href={whatsappAll}
             target="_blank"
             rel="noopener noreferrer"
             className="store-mobile-wa-btn"
           >
-            Order
+            WhatsApp
           </a>
 
           <details className="store-menu">
@@ -60,6 +90,15 @@ export function Header() {
                   <span>Why Organic</span>
                   <span className="menu-sub">100% Certified State</span>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => setIsCartOpen(true)}
+                  className="menu-link-item"
+                  style={{ textAlign: "left", width: "100%", background: "none", border: "none", cursor: "pointer", font: "inherit" }}
+                >
+                  <span>Shopping Cart</span>
+                  <span className="menu-sub">{totalItems} {totalItems === 1 ? "item" : "items"}</span>
+                </button>
                 <a
                   href={whatsappAll}
                   target="_blank"
