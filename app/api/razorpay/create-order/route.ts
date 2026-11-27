@@ -68,6 +68,27 @@ export async function POST(request: Request) {
     if (customer?.name) notes.customer_name = customer.name.slice(0, 40);
     if (customer?.phone) notes.customer_phone = customer.phone.slice(0, 15);
     if (customer?.pincode) notes.pincode = customer.pincode.slice(0, 10);
+    if (customer?.address) notes.address = customer.address.slice(0, 100);
+    if (customer?.city) notes.city = customer.city.slice(0, 40);
+    if (customer?.state) notes.state = customer.state.slice(0, 40);
+    if (customer?.email) notes.customer_email = customer.email.slice(0, 60);
+    // Store compact items JSON for sync recovery (Razorpay note value max 256 chars)
+    try {
+      const compactItems = verifiedItems.map((i) => ({
+        s: i.slug,
+        n: i.name,
+        w: i.weight,
+        q: i.quantity,
+        p: i.unitPrice,
+        t: i.itemTotal,
+      }));
+      const itemsJson = JSON.stringify(compactItems);
+      if (itemsJson.length <= 256) {
+        notes.items_json = itemsJson;
+      }
+    } catch {}
+    notes.subtotal = String(subtotal);
+    notes.shipping = String(shipping);
 
     const response = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
