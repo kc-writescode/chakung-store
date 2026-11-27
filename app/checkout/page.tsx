@@ -823,7 +823,7 @@ export default function CheckoutPage() {
                           id="name"
                           name="name"
                           autoComplete="name"
-                          placeholder="e.g. Tenzing Norbu"
+                          placeholder="Enter your full name"
                           required
                           value={form.name}
                           onChange={handleFieldChange}
@@ -852,7 +852,7 @@ export default function CheckoutPage() {
                             inputMode="numeric"
                             autoComplete="tel-national"
                             maxLength={14}
-                            placeholder="10-digit mobile"
+                            placeholder="10-digit mobile number"
                             required
                             value={form.phone}
                             onChange={handleFieldChange}
@@ -881,7 +881,7 @@ export default function CheckoutPage() {
                         id="email"
                         name="email"
                         autoComplete="email"
-                        placeholder="you@example.com"
+                        placeholder="Enter your email address"
                         required
                         value={form.email}
                         onChange={handleFieldChange}
@@ -930,7 +930,7 @@ export default function CheckoutPage() {
                             inputMode="numeric"
                             autoComplete="postal-code"
                             maxLength={6}
-                            placeholder="e.g. 560001"
+                            placeholder="Enter 6-digit PIN code"
                             required
                             value={form.pincode}
                             onChange={handleFieldChange}
@@ -1046,7 +1046,7 @@ export default function CheckoutPage() {
                         id="city"
                         name="city"
                         autoComplete="address-level2"
-                        placeholder="e.g. Vijayawada, Bengaluru, Gangtok"
+                        placeholder="Enter city, town, or district"
                         required
                         value={form.city}
                         onChange={handleFieldChange}
@@ -1091,7 +1091,7 @@ export default function CheckoutPage() {
                         id="addressLine1"
                         name="addressLine1"
                         autoComplete="address-line1"
-                        placeholder="e.g. Flat 201, Sri Krishna Nivas / House 14-42"
+                        placeholder="Flat, House no., Building, Floor"
                         required
                         value={form.addressLine1}
                         onChange={handleFieldChange}
@@ -1117,7 +1117,7 @@ export default function CheckoutPage() {
                         id="addressLine2"
                         name="addressLine2"
                         autoComplete="address-line2"
-                        placeholder="e.g. Karnamgari Street, Poranki"
+                        placeholder="Street, Area, Colony, Sector, or Village"
                         required
                         value={form.addressLine2}
                         onChange={handleFieldChange}
@@ -1179,7 +1179,7 @@ export default function CheckoutPage() {
                         type="text"
                         id="landmark"
                         name="landmark"
-                        placeholder="e.g. Near Sai Baba Temple, Opposite Post Office"
+                        placeholder="e.g. Near Metro Station, School, or Market"
                         value={form.landmark}
                         onChange={handleFieldChange}
                       />
