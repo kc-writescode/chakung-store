@@ -15,12 +15,16 @@ export function Header() {
         <Link href="/" className="store-brand" aria-label="Chakung Store Home">
           <Image
             src="/chakung-logo.png"
-            alt="Chakung Store"
-            width={84}
-            height={42}
+            alt="Chakung Mountain Emblem"
+            width={44}
+            height={44}
             className="store-brand-logo"
             priority
           />
+          <div className="store-brand-text">
+            <span className="store-brand-main">Chakung</span>
+            <span className="store-brand-sub">Store</span>
+          </div>
         </Link>
 
         {/* Desktop Navigation */}

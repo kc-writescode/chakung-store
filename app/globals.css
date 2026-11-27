@@ -88,16 +88,23 @@ h1, h2, h3, h4 {
 .store-brand {
   display: flex;
   align-items: center;
+  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
 }
 
 .store-brand-logo {
-  height: 44px;
+  height: 38px;
   width: auto;
-  max-width: 120px;
+  max-width: 60px;
   object-fit: contain;
   display: block;
+}
+
+.store-brand-text {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 
 .store-brand-main {
