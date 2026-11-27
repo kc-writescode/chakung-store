@@ -38,6 +38,37 @@ export async function GET() {
   }
 }
 
+async function uploadToCloudCDN(buffer: Buffer, filename: string, mimeType: string): Promise<string | null> {
+  try {
+    const boundary = `----ChakungUpload${Date.now()}`;
+    const header = `--${boundary}\r\nContent-Disposition: form-data; name="reqtype"\r\n\r\nfileupload\r\n--${boundary}\r\nContent-Disposition: form-data; name="fileToUpload"; filename="${filename}"\r\nContent-Type: ${mimeType}\r\n\r\n`;
+    const footer = `\r\n--${boundary}--\r\n`;
+
+    const headerBuf = Buffer.from(header, "utf-8");
+    const footerBuf = Buffer.from(footer, "utf-8");
+    const body = Buffer.concat([headerBuf, buffer, footerBuf]);
+
+    const res = await fetch("https://catbox.moe/user/api.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${boundary}`,
+        "User-Agent": "ChakungStore/1.0",
+      },
+      body,
+    });
+
+    if (res.ok) {
+      const text = (await res.text()).trim();
+      if (text.startsWith("http")) {
+        return text;
+      }
+    }
+  } catch (e) {
+    console.error("Cloud CDN upload failed:", e);
+  }
+  return null;
+}
+
 export async function POST(request: Request) {
   if (!(await isStaffAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -84,7 +115,18 @@ export async function POST(request: Request) {
         storage: "local",
       });
     } catch {
-      // On read-only serverless (Vercel), return data URL as inline image
+      // On read-only serverless (Vercel), upload to fast persistent cloud CDN (Catbox)
+      const cloudUrl = await uploadToCloudCDN(buffer, filename, file.type);
+      if (cloudUrl) {
+        return NextResponse.json({
+          success: true,
+          url: cloudUrl,
+          filename,
+          storage: "cloud",
+        });
+      }
+
+      // Final fallback: inline Data URL
       const base64 = buffer.toString("base64");
       const dataUrl = `data:${file.type};base64,${base64}`;
       return NextResponse.json({
