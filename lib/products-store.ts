@@ -159,12 +159,11 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
   if (!auth) return product.razorpayItemId;
 
   const amountPaise = Math.max(100, getPriceNumber(product.price) * 100);
-  const payload = {
+  const commonPayload = {
     name: product.name.slice(0, 50),
     description: buildRazorpayItemDescription(product),
     amount: amountPaise,
     currency: "INR",
-    active: product.active !== false,
   };
 
   try {
@@ -176,7 +175,10 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
           Authorization: auth,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...commonPayload,
+          active: product.active !== false,
+        }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -198,7 +200,10 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
           Authorization: auth,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...commonPayload,
+          active: product.active !== false,
+        }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -206,7 +211,7 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
       }
     }
 
-    // 3. If not found or product is active, create new Item
+    // 3. If not found and product is active, create new Item (POST does NOT allow active field)
     if (product.active !== false) {
       const createRes = await fetch("https://api.razorpay.com/v1/items", {
         method: "POST",
@@ -214,7 +219,7 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
           Authorization: auth,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(commonPayload),
       });
 
       if (createRes.ok) {
@@ -223,10 +228,12 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
       } else {
         const err = await createRes.json();
         console.error("Razorpay item create error:", err);
+        throw new Error(err.error?.description || "Razorpay rejected item creation");
       }
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to sync product to Razorpay:", err);
+    throw err;
   }
 
   return product.razorpayItemId;
@@ -299,9 +306,13 @@ export async function saveProduct(
   };
 
   if (syncRazorpay) {
-    const rzpId = await syncProductToRazorpay(product);
-    if (rzpId) {
-      product.razorpayItemId = rzpId;
+    try {
+      const rzpId = await syncProductToRazorpay(product);
+      if (rzpId) {
+        product.razorpayItemId = rzpId;
+      }
+    } catch (e) {
+      console.error("Razorpay sync error (continuing with local save):", e);
     }
   }
 
