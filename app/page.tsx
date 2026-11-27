@@ -63,6 +63,7 @@ export default async function StoreHomePage() {
                       height={400}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       priority={idx < 2}
+                      unoptimized={product.image.startsWith("data:")}
                       className="featured-card-photo"
                     />
                   </Link>
@@ -140,6 +141,7 @@ export default async function StoreHomePage() {
                         height={48}
                         sizes="48px"
                         loading="lazy"
+                        unoptimized={product.image.startsWith("data:")}
                         className="catalogue-thumb"
                       />
                     </Link>

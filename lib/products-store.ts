@@ -17,14 +17,15 @@ function getRazorpayAuth(): string | null {
   return `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString("base64")}`;
 }
 
-function getProductsFilePath(): string {
-  const localDir = path.join(process.cwd(), "data");
-  try {
-    if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
-    return path.join(localDir, "products.json");
-  } catch {
-    return path.join("/tmp", "chakung_products.json");
-  }
+// In-memory cache to guarantee instant read-your-own-writes consistency across async turns
+let inMemoryProducts: StoredProduct[] | null = null;
+
+function getLocalProductsPath(): string {
+  return path.join(process.cwd(), "data", "products.json");
+}
+
+function getTmpProductsPath(): string {
+  return path.join("/tmp", "chakung_products.json");
 }
 
 function seedProducts(): StoredProduct[] {
@@ -35,21 +36,67 @@ function seedProducts(): StoredProduct[] {
 }
 
 function readLocalProducts(): StoredProduct[] | null {
+  if (inMemoryProducts && inMemoryProducts.length > 0) {
+    return [...inMemoryProducts];
+  }
+
+  const map = new Map<string, StoredProduct>();
+
+  // 1. Try reading committed / persistent repo file
   try {
-    const filePath = getProductsFilePath();
+    const filePath = getLocalProductsPath();
     if (fs.existsSync(filePath)) {
       const parsed = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) {
+        for (const p of parsed) {
+          if (p.slug) map.set(p.slug, p);
+        }
+      }
     }
   } catch {}
+
+  // 2. Try reading /tmp file (handles serverless ephemeral writes)
+  try {
+    const tmpPath = getTmpProductsPath();
+    if (fs.existsSync(tmpPath)) {
+      const tmpParsed = JSON.parse(fs.readFileSync(tmpPath, "utf-8"));
+      if (Array.isArray(tmpParsed)) {
+        for (const p of tmpParsed) {
+          if (p.slug) {
+            const existing = map.get(p.slug);
+            if (!existing || (p.updatedAt && (!existing.updatedAt || p.updatedAt > existing.updatedAt))) {
+              map.set(p.slug, p);
+            }
+          }
+        }
+      }
+    }
+  } catch {}
+
+  if (map.size > 0) {
+    const list = Array.from(map.values());
+    inMemoryProducts = list;
+    return list;
+  }
+
   return null;
 }
 
 function writeLocalProducts(list: StoredProduct[]): void {
+  inMemoryProducts = [...list];
+
+  // Attempt write to data/products.json
   try {
-    fs.writeFileSync(getProductsFilePath(), JSON.stringify(list, null, 2), "utf-8");
-  } catch (err) {
-    console.error("Failed to write products file locally:", err);
+    const localDir = path.join(process.cwd(), "data");
+    if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
+    fs.writeFileSync(getLocalProductsPath(), JSON.stringify(list, null, 2), "utf-8");
+  } catch {
+    // Read-only filesystem (Vercel serverless) — fallback to /tmp
+    try {
+      fs.writeFileSync(getTmpProductsPath(), JSON.stringify(list, null, 2), "utf-8");
+    } catch (tmpErr) {
+      console.error("Failed to write products to /tmp fallback:", tmpErr);
+    }
   }
 }
 
@@ -264,11 +311,15 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
 
       const existing = bySlug.get(parsed.slug);
       if (existing) {
+        // Local state has the latest user edits/uploads.
+        // Never let an empty or stale image from Razorpay overwrite an existing local image!
+        const resolvedImage = existing.image || parsed.image || "";
         bySlug.set(parsed.slug, {
-          ...existing,
           ...parsed,
-          image: parsed.image || existing.image,
-          active: parsed.active,
+          ...existing,
+          image: resolvedImage,
+          razorpayItemId: rzpItem.id || existing.razorpayItemId,
+          active: existing.active !== undefined ? existing.active : parsed.active,
         });
       } else if (parsed.active !== false) {
         bySlug.set(parsed.slug, parsed);

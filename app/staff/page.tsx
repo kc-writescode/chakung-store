@@ -149,7 +149,9 @@ export default function StaffPage() {
   const fetchProducts = async () => {
     setLoadingProducts(true);
     try {
-      const res = await fetch("/api/staff/products");
+      const res = await fetch(`/api/staff/products?_t=${Date.now()}`, {
+        cache: "no-store",
+      });
       if (res.ok) {
         const data = await res.json();
         setProductsList(data.products || []);
@@ -414,15 +416,69 @@ export default function StaffPage() {
     setModalOpen(true);
   };
 
+  const compressImageIfNeeded = async (file: File): Promise<File | Blob> => {
+    // If file is larger than 1MB and is an image, compress on client canvas
+    if (file.size <= 1024 * 1024 || !file.type.startsWith("image/")) {
+      return file;
+    }
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const maxDim = 1600;
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return resolve(file);
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const compressedFile = new File([blob], file.name.replace(/\.[^.]+$/, ".webp"), {
+                  type: "image/webp",
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            "image/webp",
+            0.88
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Reset input so selecting the same file triggers again
+    e.target.value = "";
+
     setUploadingImage(true);
     setFormError("");
     try {
+      const processedFile = await compressImageIfNeeded(file);
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", processedFile);
       const res = await fetch("/api/staff/upload-image", {
         method: "POST",
         body: fd,
@@ -483,6 +539,18 @@ export default function StaffPage() {
             data.product.razorpayItemId ? ` (Razorpay: ${data.product.razorpayItemId})` : ""
           }`
         );
+        // Immediately update state so UI reflects the newly uploaded image without delay
+        if (data.product) {
+          setProductsList((prev) => {
+            const idx = prev.findIndex((p) => p.slug === data.product.slug);
+            if (idx >= 0) {
+              const updated = [...prev];
+              updated[idx] = data.product;
+              return updated;
+            }
+            return [data.product, ...prev];
+          });
+        }
         fetchProducts();
         setTimeout(() => setCatalogMsg(""), 5000);
       } else {
@@ -1340,10 +1408,9 @@ export default function StaffPage() {
                         />
                       </label>
                       <select
-                        value=""
+                        value={formState.image || ""}
                         onChange={(e) => {
-                          if (e.target.value)
-                            setFormState({ ...formState, image: e.target.value });
+                          setFormState({ ...formState, image: e.target.value });
                         }}
                         className="gallery-select"
                       >
@@ -1354,6 +1421,16 @@ export default function StaffPage() {
                           </option>
                         ))}
                       </select>
+                      {formState.image && (
+                        <button
+                          type="button"
+                          onClick={() => setFormState({ ...formState, image: "" })}
+                          className="clear-img-btn"
+                          title="Remove image"
+                        >
+                          ✕ Clear
+                        </button>
+                      )}
                     </div>
                     <input
                       type="text"

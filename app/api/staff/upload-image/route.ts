@@ -3,6 +3,9 @@ import { cookies } from "next/headers";
 import fs from "fs";
 import path from "path";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const STAFF_COOKIE_NAME = "chakung_staff_auth";
 
 async function isStaffAuthenticated(): Promise<boolean> {
@@ -26,7 +29,10 @@ export async function GET() {
       .readdirSync(dir)
       .filter((f) => /\.(png|jpe?g|webp|avif)$/i.test(f))
       .map((f) => `/products/${f}`);
-    return NextResponse.json({ images: files });
+    return NextResponse.json(
+      { images: files },
+      { headers: { "Cache-Control": "no-store, max-age=0" } }
+    );
   } catch (err: any) {
     return NextResponse.json({ images: [], error: err.message });
   }
@@ -48,8 +54,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: "Image must be smaller than 5MB" }, { status: 400 });
+    // Support up to 25MB high-resolution images
+    if (file.size > 25 * 1024 * 1024) {
+      return NextResponse.json({ error: "Image must be smaller than 25MB" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -64,7 +71,7 @@ export async function POST(request: Request) {
       .slice(0, 40);
     const filename = `${baseName || "product"}-${Date.now()}.${ext}`;
 
-    // Try writing to public/products (works locally). On read-only serverless (Vercel), return data URL.
+    // Try writing to public/products (works locally and in environments with persistent storage).
     try {
       const dir = path.join(process.cwd(), "public", "products");
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -73,14 +80,17 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: true,
         url: `/products/${filename}`,
+        filename,
         storage: "local",
       });
     } catch {
+      // On read-only serverless (Vercel), return data URL as inline image
       const base64 = buffer.toString("base64");
       const dataUrl = `data:${file.type};base64,${base64}`;
       return NextResponse.json({
         success: true,
         url: dataUrl,
+        filename,
         storage: "inline",
       });
     }

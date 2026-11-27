@@ -71,6 +71,7 @@ export default async function ProductDetailPage({
                     height={600}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority
+                    unoptimized={product.image.startsWith("data:")}
                     className="product-visual-image"
                   />
                 </div>

@@ -9,6 +9,9 @@ import {
   StoredProduct,
 } from "@/lib/products-store";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const STAFF_COOKIE_NAME = "chakung_staff_auth";
 
 async function isStaffAuthenticated(): Promise<boolean> {
@@ -36,14 +39,17 @@ export async function GET() {
     const keyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "";
     const hasSecret = Boolean(process.env.RAZORPAY_KEY_SECRET);
 
-    return NextResponse.json({
-      products,
-      razorpay: {
-        configured: Boolean(keyId && hasSecret),
-        keyIdMasked: keyId ? `${keyId.slice(0, 12)}...${keyId.slice(-4)}` : "",
-        mode: keyId.startsWith("rzp_live_") ? "LIVE" : keyId.startsWith("rzp_test_") ? "TEST" : "UNKNOWN",
+    return NextResponse.json(
+      {
+        products,
+        razorpay: {
+          configured: Boolean(keyId && hasSecret),
+          keyIdMasked: keyId ? `${keyId.slice(0, 12)}...${keyId.slice(-4)}` : "",
+          mode: keyId.startsWith("rzp_live_") ? "LIVE" : keyId.startsWith("rzp_test_") ? "TEST" : "UNKNOWN",
+        },
       },
-    });
+      { headers: { "Cache-Control": "no-store, max-age=0" } }
+    );
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Failed to load products" }, { status: 500 });
   }

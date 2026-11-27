@@ -30,7 +30,8 @@
       "Roast mountain pork",
       "Dal bhat"
     ],
-    "active": true
+    "active": true,
+    "razorpayItemId": "item_U5AxrmvxppqDET"
   },
   {
     "slug": "gundruk",
@@ -62,7 +63,8 @@
       "Hot rice",
       "Dalle chilli chutney"
     ],
-    "active": true
+    "active": true,
+    "razorpayItemId": "item_U5Axt1aHxsUHAj"
   },
   {
     "slug": "buckwheat-phapar",
@@ -93,7 +95,9 @@
       "Gundruk soup",
       "Mountain wildflower honey"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5AxuDEXcuxxPc"
   },
   {
     "slug": "soybean-bhatmas",
@@ -124,7 +128,9 @@
       "Dalle chilli",
       "Millet beer (Tongba)"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5AxvRLWESAIyE"
   },
   {
     "slug": "white-rajma-chitra",
@@ -155,7 +161,9 @@
       "Village ghee",
       "Dalle Khursani pickle"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5Axwe1jZti9YD"
   },
   {
     "slug": "millet-powder-roti",
@@ -186,7 +194,9 @@
       "Gundruk ko jhol",
       "Dalle chilli chutney"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5AxxukOUQy1dh"
   },
   {
     "slug": "pumpkin-seeds",
@@ -217,7 +227,9 @@
       "Morning porridge",
       "Trail snacks"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5Axz6lnRAWSPZ"
   },
   {
     "slug": "maize-corn-makai",
@@ -248,7 +260,9 @@
       "Fresh churned butter",
       "Dalle chilli momo chutney"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5Ay0Jm1qCQwfZ"
   },
   {
     "slug": "black-gram-kalo-dal",
@@ -279,7 +293,9 @@
       "Village ghee",
       "Millet flatbreads"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5Ay1WiZPqd5Xo"
   },
   {
     "slug": "rice-beans-masyang",
@@ -310,7 +326,9 @@
       "Dalle chilli chutney",
       "Gundruk sadeko"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5Ay2jaOym7FUt"
   },
   {
     "slug": "green-gram-hariyo-mung",
@@ -341,6 +359,42 @@
       "Fresh mountain curd",
       "Local village pickles"
     ],
-    "active": true
+    "active": true,
+    "giTag": false,
+    "razorpayItemId": "item_U5Ay3wCwvPcmbQ"
+  },
+  {
+    "slug": "turmeric",
+    "name": "Turmeric (Besar)",
+    "localName": "Besar · बेसार (Himalayan Turmeric)",
+    "category": "Spice",
+    "price": "₹220",
+    "weight": "250g pack",
+    "image": "/products/turmeric-besar.jpg",
+    "giTag": false,
+    "organic": true,
+    "featured": true,
+    "altitude": "1,200m – 1,800m",
+    "harvestSeason": "October – December",
+    "tagline": "Pure West Sikkim mountain turmeric — vibrant golden colour and high curcumin content.",
+    "description": "Cultivated on organic terraced slopes in West Sikkim. Sun-dried and slow-milled to retain essential oils and curcumin. A fragrant, earthy staple of Sikkimese mountain cuisine and traditional wellness.",
+    "tastingNotes": [
+      "Vibrant earthy aroma",
+      "Warm pepper undertone",
+      "Golden mountain hue"
+    ],
+    "traditionalUses": [
+      "Traditional kitchen tempering for dals, vegetable curries, and bone broths",
+      "Warm golden turmeric milk (Haldi doodh) with mountain honey",
+      "Aromatic seasoning in fermented gundruk and fresh vegetable stir-fries"
+    ],
+    "pairingSuggestions": [
+      "Steamed mountain rice",
+      "Dalle chilli momo chutney",
+      "Warm mountain milk with raw honey"
+    ],
+    "razorpayItemId": "item_U5AsD1PtpYIxtT",
+    "active": true,
+    "updatedAt": "2026-11-27T11:37:51.114Z"
   }
 ]

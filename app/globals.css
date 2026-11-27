@@ -3597,6 +3597,23 @@ h1, h2, h3, h4 {
   cursor: pointer;
 }
 
+.clear-img-btn {
+  background: rgba(180, 50, 50, 0.1);
+  color: #c33;
+  border: 1px solid rgba(180, 50, 50, 0.25);
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-img-btn:hover {
+  background: #c33;
+  color: #fff;
+}
+
 .form-checkboxes-row {
   display: flex;
   gap: 16px;
