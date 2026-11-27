@@ -52,15 +52,17 @@ export default async function StoreHomePage() {
           </div>
 
           <div className="featured-grid">
-            {featuredProducts.map((product) => (
+            {featuredProducts.map((product, idx) => (
               <article key={product.slug} className="featured-card">
                 {product.image ? (
                   <Link href={`/${product.slug}`} className="featured-card-photo-wrap">
                     <Image
                       src={product.image}
                       alt={`${product.name} (${product.localName})`}
-                      width={600}
-                      height={600}
+                      width={400}
+                      height={400}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      priority={idx < 2}
                       className="featured-card-photo"
                     />
                   </Link>
@@ -134,8 +136,10 @@ export default async function StoreHomePage() {
                       <Image
                         src={product.image}
                         alt={product.name}
-                        width={44}
-                        height={44}
+                        width={48}
+                        height={48}
+                        sizes="48px"
+                        loading="lazy"
                         className="catalogue-thumb"
                       />
                     </Link>

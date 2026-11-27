@@ -67,8 +67,9 @@ export default async function ProductDetailPage({
                   <Image
                     src={product.image}
                     alt={`${product.name} - Chakung Sikkim Produce`}
-                    width={800}
-                    height={800}
+                    width={600}
+                    height={600}
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     priority
                     className="product-visual-image"
                   />
