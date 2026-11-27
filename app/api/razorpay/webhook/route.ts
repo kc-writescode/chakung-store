@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { saveOrder, StoredOrder } from "@/lib/orders";
+import { parseAddressFromNotes } from "@/lib/indian-address";
 import { sendPushNotificationToAll } from "@/lib/push";
 import { sendStoreOwnerNotification, sendCustomerConfirmation } from "@/lib/email";
 
@@ -31,16 +32,42 @@ export async function POST(request: Request) {
       const amountTotal = Math.round(payment.amount / 100);
       const orderRef = payment.order_id || payment.id;
 
-      const rawAddress = notes.address || "";
-      const pincodeMatch = rawAddress.match(/\b\d{6}\b/) || [notes.pincode || "737121"];
+      const { address, city, state, pincode } = parseAddressFromNotes(notes);
 
       const customerName =
         notes.customer_name || notes.name || payment.description || "Online Customer";
-      const customerPhone = notes.customer_phone || payment.contact || "";
-      const customerEmail = payment.email || "";
+      const customerPhone = (notes.customer_phone || payment.contact || "").replace(/^\+91/, "");
+      const customerEmail = notes.customer_email || payment.email || "";
 
-      const shipping = amountTotal >= 500 ? 50 : 70;
-      const subtotal = Math.max(0, amountTotal - shipping);
+      const storedSubtotal = notes.subtotal ? parseInt(notes.subtotal, 10) : null;
+      const storedShipping = notes.shipping ? parseInt(notes.shipping, 10) : null;
+      const shipping = storedShipping ?? (amountTotal >= 500 ? 50 : 70);
+      const subtotal = storedSubtotal ?? Math.max(0, amountTotal - shipping);
+
+      let parsedItems: StoredOrder["items"] = [
+        {
+          name: "Sikkim Village Organic Harvest",
+          weight: "Mountain Pack",
+          quantity: 1,
+          unitPrice: subtotal,
+          itemTotal: subtotal,
+        },
+      ];
+      if (notes.items_json) {
+        try {
+          const compact = JSON.parse(notes.items_json);
+          if (Array.isArray(compact) && compact.length > 0) {
+            parsedItems = compact.map((i: any) => ({
+              slug: i.s,
+              name: i.n,
+              weight: i.w,
+              quantity: i.q,
+              unitPrice: i.p,
+              itemTotal: i.t,
+            }));
+          }
+        } catch {}
+      }
 
       const orderData: StoredOrder = {
         id: orderRef,
@@ -52,20 +79,12 @@ export async function POST(request: Request) {
           name: customerName,
           phone: customerPhone,
           email: customerEmail,
-          address: rawAddress || "Address provided during checkout",
-          city: notes.city || "West Sikkim",
-          state: notes.state || "Sikkim",
-          pincode: pincodeMatch[0],
+          address,
+          city,
+          state,
+          pincode,
         },
-        items: [
-          {
-            name: "Sikkim Village Organic Harvest",
-            weight: "Mountain Pack",
-            quantity: 1,
-            unitPrice: subtotal,
-            itemTotal: subtotal,
-          },
-        ],
+        items: parsedItems,
         subtotal,
         shipping,
         total: amountTotal,

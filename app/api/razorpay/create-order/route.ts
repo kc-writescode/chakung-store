@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { getPriceNumber } from "@/content/products";
 import { getProductBySlug } from "@/lib/products-store";
+import {
+  isValidIndianPincode,
+  normalizeIndianPhone,
+  normalizeIndianState,
+} from "@/lib/indian-address";
 
 export async function POST(request: Request) {
   try {
@@ -23,6 +28,65 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    const cleanName = String(customer?.name || "").trim();
+    const cleanPhone = normalizeIndianPhone(String(customer?.phone || ""));
+    const cleanEmail = String(customer?.email || "").trim();
+    const cleanAddress = String(customer?.address || "").trim();
+    const cleanCity = String(customer?.city || "").trim();
+    const cleanPincode = String(customer?.pincode || "").trim();
+    const cleanState =
+      normalizeIndianState(customer?.state) || String(customer?.state || "").trim();
+
+    if (!cleanName) {
+      return NextResponse.json({ error: "Please enter your full name." }, { status: 400 });
+    }
+    if (cleanPhone.length < 10) {
+      return NextResponse.json(
+        { error: "Please enter a valid 10-digit mobile number." },
+        { status: 400 }
+      );
+    }
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      return NextResponse.json(
+        { error: "Please enter a valid email address." },
+        { status: 400 }
+      );
+    }
+    if (!cleanAddress) {
+      return NextResponse.json(
+        { error: "Please enter your delivery street / house address." },
+        { status: 400 }
+      );
+    }
+    if (!cleanCity) {
+      return NextResponse.json(
+        { error: "Please enter your city or town." },
+        { status: 400 }
+      );
+    }
+    if (!cleanState) {
+      return NextResponse.json(
+        { error: "Please select your delivery state or union territory." },
+        { status: 400 }
+      );
+    }
+    if (!isValidIndianPincode(cleanPincode)) {
+      return NextResponse.json(
+        { error: "Please enter a valid 6-digit Indian PIN code." },
+        { status: 400 }
+      );
+    }
+
+    const normalizedCustomer = {
+      name: cleanName,
+      phone: cleanPhone,
+      email: cleanEmail,
+      address: cleanAddress,
+      city: cleanCity,
+      state: cleanState,
+      pincode: cleanPincode,
+    };
 
     // Securely calculate total by looking up prices from server-side products
     let subtotal = 0;
@@ -65,14 +129,14 @@ export async function POST(request: Request) {
     const notes: Record<string, string> = {
       store: "Chakung Store, West Sikkim",
       order_type: "Village Produce Dispatch",
+      customer_name: normalizedCustomer.name.slice(0, 40),
+      customer_phone: normalizedCustomer.phone.slice(0, 15),
+      customer_email: normalizedCustomer.email.slice(0, 60),
+      address: normalizedCustomer.address.slice(0, 250),
+      city: normalizedCustomer.city.slice(0, 50),
+      state: normalizedCustomer.state.slice(0, 50),
+      pincode: normalizedCustomer.pincode.slice(0, 10),
     };
-    if (customer?.name) notes.customer_name = customer.name.slice(0, 40);
-    if (customer?.phone) notes.customer_phone = customer.phone.slice(0, 15);
-    if (customer?.pincode) notes.pincode = customer.pincode.slice(0, 10);
-    if (customer?.address) notes.address = customer.address.slice(0, 100);
-    if (customer?.city) notes.city = customer.city.slice(0, 40);
-    if (customer?.state) notes.state = customer.state.slice(0, 40);
-    if (customer?.email) notes.customer_email = customer.email.slice(0, 60);
     // Store compact items JSON for sync recovery (Razorpay note value max 256 chars)
     try {
       const compactItems = verifiedItems.map((i) => ({
@@ -125,7 +189,7 @@ export async function POST(request: Request) {
       shipping,
       total,
       items: verifiedItems,
-      customer,
+      customer: normalizedCustomer,
     });
   } catch (error: any) {
     console.error("Order creation internal error:", error);

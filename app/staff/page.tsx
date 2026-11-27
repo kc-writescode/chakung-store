@@ -926,8 +926,15 @@ export default function StaffPage() {
                               <span>✉️ {order.customer.email}</span>
                             </p>
                             <p className="cust-address">
-                              {order.customer.address}, {order.customer.city},{" "}
-                              {order.customer.state} - <strong>{order.customer.pincode}</strong>
+                              {[order.customer.address, order.customer.city, order.customer.state]
+                                .filter(Boolean)
+                                .join(", ")}
+                              {order.customer.pincode ? (
+                                <>
+                                  {" "}
+                                  - <strong>{order.customer.pincode}</strong>
+                                </>
+                              ) : null}
                             </p>
 
                             <div className="customer-contact-actions">

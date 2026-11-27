@@ -58,8 +58,14 @@ function OrderSuccessContent() {
                 <div className="meta-row">
                   <span className="meta-label">Shipping Address:</span>
                   <span className="meta-value">
-                    {orderDetails.customer.address}, {orderDetails.customer.city},{" "}
-                    {orderDetails.customer.state} - {orderDetails.customer.pincode}
+                    {[
+                      orderDetails.customer.address,
+                      orderDetails.customer.city,
+                      orderDetails.customer.state,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                    {orderDetails.customer.pincode ? ` - ${orderDetails.customer.pincode}` : ""}
                   </span>
                 </div>
               </>

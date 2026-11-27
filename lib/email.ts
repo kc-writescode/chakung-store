@@ -111,7 +111,7 @@ export async function sendStoreOwnerNotification(order: OrderEmailData) {
           <p style="margin: 4px 0; font-size: 15px;"><strong>Email:</strong> ${order.customer.email}</p>
           <p style="margin: 4px 0; font-size: 15px;"><strong>Address:</strong><br>
             ${order.customer.address}<br>
-            ${order.customer.city}, ${order.customer.state} - <strong>${order.customer.pincode}</strong>
+            ${[order.customer.city, order.customer.state].filter(Boolean).join(", ")}${order.customer.pincode ? ` - <strong>${order.customer.pincode}</strong>` : ""}
           </p>
         </div>
 
@@ -213,7 +213,7 @@ export async function sendCustomerConfirmation(order: OrderEmailData) {
         <div style="background-color: #faf7f2; border: 1px solid #e0d5c4; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
           <p style="margin: 3px 0; font-size: 13px; color: #666;">Order Reference: <strong style="color: #1a3328;">${order.orderId}</strong></p>
           <p style="margin: 3px 0; font-size: 13px; color: #666;">Payment ID: <code style="color: #1a3328;">${order.paymentId}</code></p>
-          <p style="margin: 3px 0; font-size: 13px; color: #666;">Delivery Address: <strong style="color: #1a3328;">${order.customer.address}, ${order.customer.city}, ${order.customer.state} - ${order.customer.pincode}</strong></p>
+          <p style="margin: 3px 0; font-size: 13px; color: #666;">Delivery Address: <strong style="color: #1a3328;">${[order.customer.address, order.customer.city, order.customer.state].filter(Boolean).join(", ")}${order.customer.pincode ? ` - ${order.customer.pincode}` : ""}</strong></p>
         </div>
 
         <!-- Produce Summary -->

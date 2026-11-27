@@ -18,6 +18,7 @@ interface CartContextType {
   subtotal: number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
+  isHydrated: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -114,6 +115,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         subtotal,
         isCartOpen,
         setIsCartOpen,
+        isHydrated: mounted,
       }}
     >
       {children}

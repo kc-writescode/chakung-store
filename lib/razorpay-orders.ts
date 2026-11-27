@@ -11,6 +11,8 @@
  * Shiprocket shipment id key:         chakung_sr_ship
  */
 
+import { parseAddressFromNotes } from "./indian-address";
+
 export interface StoredOrder {
   id: string;
   orderId?: string;
@@ -52,15 +54,7 @@ function getAuth() {
 }
 
 function parseAddress(notes: Record<string, string>) {
-  const rawAddress = notes.address || "";
-  const pincodeMatch = rawAddress.match(/\b\d{6}\b/);
-  const pincode = notes.pincode || (pincodeMatch ? pincodeMatch[0] : "737121");
-  return {
-    address: rawAddress || "Address provided during checkout",
-    city: notes.city || "West Sikkim",
-    state: notes.state || "Sikkim",
-    pincode,
-  };
+  return parseAddressFromNotes(notes);
 }
 
 function parseItems(notes: Record<string, string>, subtotal: number) {
@@ -185,10 +179,10 @@ export async function saveOrder(order: StoredOrder): Promise<void> {
   if (order.customer.name) notes.customer_name = order.customer.name.slice(0, 40);
   if (order.customer.phone) notes.customer_phone = order.customer.phone.slice(0, 15);
   if (order.customer.email) notes.customer_email = order.customer.email.slice(0, 60);
-  if (order.customer.address) notes.address = order.customer.address.slice(0, 100);
-  if (order.customer.city) notes.city = order.customer.city.slice(0, 40);
-  if (order.customer.state) notes.state = order.customer.state.slice(0, 40);
-  if (order.customer.pincode) notes.pincode = order.customer.pincode;
+  if (order.customer.address) notes.address = order.customer.address.slice(0, 250);
+  if (order.customer.city) notes.city = order.customer.city.slice(0, 50);
+  if (order.customer.state) notes.state = order.customer.state.slice(0, 50);
+  if (order.customer.pincode) notes.pincode = order.customer.pincode.slice(0, 10);
   notes.subtotal = String(order.subtotal);
   notes.shipping = String(order.shipping);
 
