@@ -202,6 +202,7 @@ function buildRazorpayItemDescription(product: StoredProduct): string {
     tastingNotes: product.tastingNotes || [],
     traditionalUses: product.traditionalUses || [],
     pairingSuggestions: product.pairingSuggestions || [],
+    updatedAt: product.updatedAt || new Date().toISOString(),
   };
   const metaJson = JSON.stringify(meta);
   const tagBlock = `\n${CHAKUNG_TAG_PREFIX}${product.slug}]${metaJson}`;
@@ -255,6 +256,8 @@ export function parseRazorpayItem(item: any): StoredProduct | null {
     pairingSuggestions: Array.isArray(meta.pairingSuggestions) ? meta.pairingSuggestions : ["Steamed mountain rice"],
     razorpayItemId: item.id,
     active: item.active !== false,
+    // Carry updatedAt from metadata (written by staff portal on save) so merge can compare freshness
+    updatedAt: meta.updatedAt || (item.updated_at ? new Date(item.updated_at * 1000).toISOString() : undefined),
   };
 }
 
@@ -414,15 +417,37 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
 
       const existing = bySlug.get(parsed.slug);
       if (existing) {
-        // Local state has the latest user edits/uploads.
-        // Never let an empty or stale image from Razorpay overwrite an existing local image!
-        const resolvedImage = existing.image || parsed.image || "";
+        // Determine which source is fresher.
+        // - `existing` = from committed data/products.json (may have old image, no updatedAt for seed products)
+        //   OR from /tmp if the same container handled a previous save (has updatedAt).
+        // - `parsed`   = from Razorpay metadata (reflects the most recent staff-portal save across ANY container).
+        //
+        // Key rule: if Razorpay metadata has an updatedAt that is NEWER than the local record,
+        // the staff portal updated this product more recently — use Razorpay's image (and all other fields).
+        const existingTs = existing.updatedAt || "";
+        // parsed.updatedAt comes from the meta JSON blob we embed in the Razorpay description.
+        // Fallback to Razorpay's own updated_at unix timestamp.
+        const parsedTs = parsed.updatedAt ||
+          (rzpItem.updated_at ? new Date(rzpItem.updated_at * 1000).toISOString() : "");
+
+        // Razorpay is the source of truth for the image if it was saved more recently,
+        // OR if the local entry has no updatedAt (seed product that was never saved through staff portal).
+        const rzpIsNewer = parsedTs && (!existingTs || parsedTs > existingTs);
+
+        const resolvedImage = rzpIsNewer
+          ? (parsed.image || existing.image || "")   // Razorpay has a newer staff-updated image
+          : (existing.image || parsed.image || "");  // Local (or in-memory) has a newer/equal image
+
         bySlug.set(parsed.slug, {
           ...parsed,
           ...existing,
           image: resolvedImage,
           razorpayItemId: rzpItem.id || existing.razorpayItemId,
           active: existing.active !== undefined ? existing.active : parsed.active,
+          // Always prefer the more recent updatedAt so future merges stay correct
+          updatedAt: parsedTs && existingTs
+            ? (parsedTs > existingTs ? parsedTs : existingTs)
+            : (parsedTs || existingTs || undefined),
         });
       } else if (parsed.active !== false) {
         bySlug.set(parsed.slug, parsed);
