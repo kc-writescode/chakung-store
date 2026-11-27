@@ -88,7 +88,7 @@ export async function sendStoreOwnerNotification(order: OrderEmailData) {
       
       <!-- Header -->
       <div style="background-color: #1a3328; color: #f6f1e7; padding: 24px; text-align: center;">
-        <h1 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">🏔️ Chakung Store — New Order Received!</h1>
+        <h1 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">🏔️ Chakung Store - New Order Received!</h1>
         <p style="margin: 6px 0 0; font-size: 14px; opacity: 0.9;">Order Reference: <strong>${order.orderId}</strong> · Paid via Razorpay</p>
       </div>
 
@@ -155,7 +155,7 @@ export async function sendStoreOwnerNotification(order: OrderEmailData) {
   return transporter.sendMail({
     from: `"Chakung Store Orders" <${process.env.GMAIL_USER}>`,
     to: notificationEmail,
-    subject: `🏔️ New Harvest Order! #${order.orderId} — ₹${order.total} (${order.customer.name})`,
+    subject: `🏔️ New Harvest Order! #${order.orderId} - ₹${order.total} (${order.customer.name})`,
     html,
   });
 }

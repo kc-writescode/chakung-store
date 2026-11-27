@@ -24,17 +24,17 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="store-footer-heading">Orders & Enquiries</h4>
+            <h4 className="store-footer-heading">Enquiries &amp; Support</h4>
             <p className="store-footer-contact">
-              All parcels ship directly from West Sikkim via India Post Speed Post & air couriers across India.
+              All parcels ship directly from West Sikkim via India Post Speed Post &amp; air couriers across India.
             </p>
             <a
-              href="https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20would%20like%20to%20place%20an%20order."
+              href="https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20have%20an%20enquiry%20regarding%20organic%20produce."
               className="store-footer-wa-btn"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Order on WhatsApp (+91 62950 34036)
+              Enquire on WhatsApp (+91 62950 34036)
             </a>
           </div>
         </div>

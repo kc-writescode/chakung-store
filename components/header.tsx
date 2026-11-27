@@ -7,7 +7,7 @@ import { useCart } from "@/context/cart-context";
 export function Header() {
   const { totalItems, setIsCartOpen } = useCart();
   const whatsappAll =
-    "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20would%20like%20to%20order%20organic%20produce.";
+    "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20have%20an%20enquiry%20regarding%20organic%20produce.";
 
   return (
     <header className="store-header">
@@ -33,7 +33,7 @@ export function Header() {
             rel="noopener noreferrer"
             className="store-order-link"
           >
-            WhatsApp
+            Enquiries
           </a>
           <a
             href="https://chakung.com"
@@ -79,7 +79,7 @@ export function Header() {
             rel="noopener noreferrer"
             className="store-mobile-wa-btn"
           >
-            WhatsApp
+            Enquiries
           </a>
 
           <details className="store-menu">
@@ -112,7 +112,7 @@ export function Header() {
                   rel="noopener noreferrer"
                   className="menu-link-item menu-link-highlight"
                 >
-                  <span>Order on WhatsApp</span>
+                  <span>Enquiries on WhatsApp</span>
                   <span className="menu-sub">+91 62950 34036</span>
                 </a>
                 <a

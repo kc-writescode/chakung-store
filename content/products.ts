@@ -23,7 +23,7 @@ export const products: Product[] = [
     slug: "dalle-khursani",
     name: "Dalle Khursani",
     localName: "दल्ले खुर्सानी (Himalayan Cherry Chilli)",
-    tagline: "Sikkim's celebrated round chilli — fiery, fruity, legendary.",
+    tagline: "Sikkim's celebrated round chilli - fiery, fruity, legendary.",
     description:
       "Grown only in the hill districts of Sikkim and Darjeeling, the Dalle Khursani is one of the world's most pungent chillies (100,000 to 350,000 SHU). It holds an official Geographical Indication (GI) tag from the Government of India. Sun-dried whole over wicker mats on the ridge. Imparts a bright, fruity warmth before delivering its trademark Himalayan heat.",
     category: "Spice",
@@ -47,7 +47,7 @@ export const products: Product[] = [
     slug: "gundruk",
     name: "Gundruk",
     localName: "गुन्द्रुक (Fermented Mustard & Radish Leaves)",
-    tagline: "Fermented greens — the irreplaceable soul of a Sikkim mountain kitchen.",
+    tagline: "Fermented greens - the irreplaceable soul of a Sikkim mountain kitchen.",
     description:
       "Gundruk is Sikkim's most revered traditional food. Mustard and radish leaves harvested before the frost are wilted in the sun, packed tightly into earthen jars, and fermented naturally for weeks in cool mountain air. Once tangy and sour, they are dried completely in the sun. Probiotic-rich, deeply savoury, and protected with a GI tag.",
     category: "Ferment",
@@ -71,7 +71,7 @@ export const products: Product[] = [
     slug: "buckwheat-phapar",
     name: "Buckwheat",
     localName: "Phapar · फापर (Himalayan Tartary Buckwheat)",
-    tagline: "High-altitude grain — gluten-free, nutty, ancient.",
+    tagline: "High-altitude grain - gluten-free, nutty, ancient.",
     description:
       "Cultivated on alpine slopes above 1,400 meters where rice cannot thrive. Tartary buckwheat is ancient, hardy, and naturally free of gluten. Exceptionally dense in rutin, magnesium, and dietary fibre. Cleaned and stone-ground into wholesome grey-brown flour or roasted whole as a hearty mountain trail snack.",
     category: "Grain",
@@ -94,7 +94,7 @@ export const products: Product[] = [
     slug: "soybean-bhatmas",
     name: "Yellow Soybeans (Bhatmas)",
     localName: "Bhatmas · पहेँलो भटमास (Hill Soya)",
-    tagline: "Sun-dried Sikkim golden soya — the ridge's everyday protein.",
+    tagline: "Sun-dried Sikkim golden soya - the ridge's everyday protein.",
     description:
       "Bhatmas is an essential part of daily life across West Sikkim. Smallholder farmers cultivate non-GMO, organic soya varieties on hillside terraces. Small, firm, and golden-brown. Used dry-roasted as an unhurried evening snack with garlic and salt, boiled into nourishing winter broths, or fermented into traditional kinema.",
     category: "Legume",
@@ -117,7 +117,7 @@ export const products: Product[] = [
     slug: "white-rajma-chitra",
     name: "White Rajma",
     localName: "Seto Rajma · सेतो राज्मा (Himalayan White Kidney Beans)",
-    tagline: "High-altitude white kidney beans — creamy, melt-in-mouth, naturally sweet.",
+    tagline: "High-altitude white kidney beans - creamy, melt-in-mouth, naturally sweet.",
     description:
       "Grown in pristine, chemical-free mountain terraces of West Sikkim. Himalayan White Rajma is celebrated for its tender skin and rich, buttery texture that dissolves luxuriously when slow-cooked with fresh ginger, garlic, and mountain herbs. High in clean plant protein and dietary fibre.",
     category: "Legume",
@@ -186,7 +186,7 @@ export const products: Product[] = [
     slug: "maize-corn-makai",
     name: "Maize (Corn) Seed & Powder",
     localName: "Makai · मकै (Himalayan Native Corn)",
-    tagline: "Native mountain hill corn — stone-ground coarse meal and whole sun-dried kernels.",
+    tagline: "Native mountain hill corn - stone-ground coarse meal and whole sun-dried kernels.",
     description:
       "Grown naturally on terraced hill slopes across West Sikkim. Non-hybrid, chemical-free mountain maize is slow-ripened in Himalayan sun and hand-shelled. Rich in dietary fibre, natural carotenoids, and sweet earthy corn flavour. Available as sun-dried whole kernels for trail roasting or traditional village stone-ground meal for rotis and dhido.",
     category: "Grain",
@@ -209,7 +209,7 @@ export const products: Product[] = [
     slug: "black-gram-kalo-dal",
     name: "Whole Black Gram (Kalo Dal)",
     localName: "Kalo Dal · कालो दाल (Himalayan Black Urad)",
-    tagline: "Unpolished mountain whole black gram — earthy, rich, and slow-simmered.",
+    tagline: "Unpolished mountain whole black gram - earthy, rich, and slow-simmered.",
     description:
       "Hand-harvested from terraced hillside plots in West Sikkim. Unpolished and completely untreated, Himalayan whole black gram develops an intense, velvety broth when slow-cooked over a wood fire. Exceptionally rich in dietary iron, potassium, and plant protein.",
     category: "Legume",
@@ -232,7 +232,7 @@ export const products: Product[] = [
     slug: "rice-beans-masyang",
     name: "Rice Beans (Masyang / Mashem)",
     localName: "Masyang · मस्याङ / मासेम (Indigenous Rice Beans)",
-    tagline: "Prized heirloom mountain pulse — buttery sweet, tender, and easily digestible.",
+    tagline: "Prized heirloom mountain pulse - buttery sweet, tender, and easily digestible.",
     description:
       "Masyang is an indigenous hill legume cultivated for generations on West Sikkim terraces. Small, cylindrical, and speckled golden-green. Exceptionally easy to digest compared to standard plains lentils, with a remarkably sweet, buttery mouthfeel. A cherished village comfort staple during winter months.",
     category: "Legume",
@@ -255,7 +255,7 @@ export const products: Product[] = [
     slug: "green-gram-hariyo-mung",
     name: "Whole Green Gram (Hariyo Mung)",
     localName: "Hariyo Mung · हरियो मूंग (Sabut Moong)",
-    tagline: "Terrace-cultivated whole green moong — pure, restorative, and nutrient-dense.",
+    tagline: "Terrace-cultivated whole green moong - pure, restorative, and nutrient-dense.",
     description:
       "Grown in chemical-free hill terraces in West Sikkim. Tiny, unpolished emerald grains with intact, nutrient-dense outer skins. Ideal for sprouting into crisp micro-greens or simmering into light, restorative mountain broths. Naturally packed with plant proteins, folate, and antioxidants.",
     category: "Legume",

@@ -254,6 +254,6 @@ export async function updateOrderStatus(
     return null;
   }
 
-  // Return a stub — caller re-fetches getAllOrders() anyway
+  // Return a stub - caller re-fetches getAllOrders() anyway
   return null;
 }

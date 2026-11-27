@@ -232,7 +232,7 @@ export default function CheckoutPage() {
   };
 
   const whatsappBackupLink = `https://wa.me/916295034036?text=${encodeURIComponent(
-    `Hello Chakung Store, I would like to place an order directly:\nItems: ${items
+    `Hello Chakung Store, I have an enquiry regarding my checkout:\nItems: ${items
       .map((i) => `${i.product.name} x${i.quantity}`)
       .join(", ")}\nTotal: ₹${grandTotal}\nDelivery to: ${customer.name || "Customer"}, ${customer.pincode || ""}`
   )}`;
@@ -400,14 +400,14 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="or-whatsapp-box">
-                      <span>Prefer manual payment via UPI QR or WhatsApp?</span>
+                      <span>Have a question about your order or delivery?</span>
                       <a
                         href={whatsappBackupLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="whatsapp-alt-link"
                       >
-                        Order via WhatsApp instead →
+                        Enquire via WhatsApp →
                       </a>
                     </div>
                   </div>

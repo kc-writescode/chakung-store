@@ -36,8 +36,8 @@ export default async function ProductDetailPage({
     return null;
   }
 
-  const waOrderLink = `https://wa.me/916295034036?text=${encodeURIComponent(
-    `Hello Chakung Store, I would like to order ${product.name} (${product.localName}) - ${product.price} for ${product.weight}. Please share payment details and dispatch time to my pincode.`
+  const waEnquiryLink = `https://wa.me/916295034036?text=${encodeURIComponent(
+    `Hello Chakung Store, I have an enquiry regarding ${product.name} (${product.localName}) - ${product.price} for ${product.weight}.`
   )}`;
 
   return (
@@ -158,12 +158,12 @@ export default async function ProductDetailPage({
 
               <div className="alt-order-wrap">
                 <a
-                  href={waOrderLink}
+                  href={waEnquiryLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="wa-subtle-link"
                 >
-                  💬 Or message on WhatsApp to order
+                  💬 Have questions? Enquire on WhatsApp
                 </a>
               </div>
 

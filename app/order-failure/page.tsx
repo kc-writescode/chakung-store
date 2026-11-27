@@ -9,7 +9,7 @@ function OrderFailureContent() {
   const orderId = searchParams.get("order_id");
   const reason = searchParams.get("reason") || "Payment could not be processed by your bank or payment gateway.";
 
-  const whatsappMessage = `Hello Chakung Store, my online payment was unsuccessful.\nOrder ID: ${orderId || "N/A"}\nReason: ${reason}\nCould you please help me complete the order via direct UPI QR?`;
+  const whatsappMessage = `Hello Chakung Store, my online payment was unsuccessful.\nOrder ID: ${orderId || "N/A"}\nReason: ${reason}\nI have an enquiry regarding this order.`;
   const whatsappUrl = `https://wa.me/916295034036?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
@@ -20,7 +20,7 @@ function OrderFailureContent() {
           <p className="result-kicker failure-kicker">Payment Unsuccessful</p>
           <h1 className="result-title">Payment could not be completed.</h1>
           <p className="result-lede">
-            Don&apos;t worry — no funds were deducted from your account. If amount was debited, your bank will automatically refund it within 3-5 business days.
+            Don&apos;t worry - no funds were deducted from your account. If amount was debited, your bank will automatically refund it within 3-5 business days.
           </p>
 
           <div className="result-meta-box failure-meta-box">
@@ -41,7 +41,7 @@ function OrderFailureContent() {
             <ul>
               <li>Check if your UPI app or netbanking session timed out.</li>
               <li>Ensure your card has online domestic transactions enabled.</li>
-              <li>Or simply pay directly via Google Pay / PhonePe UPI QR on WhatsApp!</li>
+              <li>Or message our team on WhatsApp for payment enquiries!</li>
             </ul>
           </div>
 
@@ -55,7 +55,7 @@ function OrderFailureContent() {
               rel="noopener noreferrer"
               className="store-btn-ghost"
             >
-              Complete Order on WhatsApp
+              Enquire on WhatsApp
             </a>
           </div>
         </div>

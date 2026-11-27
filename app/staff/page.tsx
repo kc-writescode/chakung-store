@@ -1305,7 +1305,7 @@ export default function StaffPage() {
 
               {!editingSlug && (
                 <div className="form-field">
-                  <label>URL Slug (optional — auto-generated from name if blank)</label>
+                  <label>URL Slug (optional - auto-generated from name if blank)</label>
                   <input
                     type="text"
                     value={formState.slug}

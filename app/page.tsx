@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function StoreHomePage() {
   const products = await getAllProducts();
   const featuredProducts = products.filter((p) => p.featured);
-  const whatsappAll = "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20would%20like%20to%20order%20organic%20produce.";
+  const whatsappAll = "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20have%20an%20enquiry%20regarding%20organic%20produce.";
 
   return (
     <main>
@@ -19,7 +19,7 @@ export default async function StoreHomePage() {
             <p className="store-kicker">Soreng District · West Sikkim · 1,400m</p>
             <h1>From the Himalayan ridge to your kitchen.</h1>
             <p className="store-lede">
-              Chakung is a mountain village above the clouds in Sikkim — India&apos;s first 100% certified organic state.
+              Chakung is a mountain village above the clouds in Sikkim - India&apos;s first 100% certified organic state.
               These heirloom seeds, sun-dried chillies, ancient millets, and fermented greens are grown without chemical inputs on terraced family farms.
             </p>
             <div className="store-hero-actions">
@@ -27,7 +27,7 @@ export default async function StoreHomePage() {
                 Explore the Catalogue
               </a>
               <a href={whatsappAll} target="_blank" rel="noopener noreferrer" className="store-btn-ghost">
-                Order via WhatsApp
+                Enquire on WhatsApp
               </a>
             </div>
             <div className="store-pills-row">
@@ -189,7 +189,7 @@ export default async function StoreHomePage() {
                 Tucked away in Soreng District, West Sikkim, at around 4,500 ft, Chakung is a small mountain village where clouds sleep in the valleys, prayer flags flutter on every ridge, and every morning opens with a view of the snow-capped Kanchenjunga range.
               </p>
               <p>
-                It&apos;s still pure Sikkim — no crowd, no noise. Just terraced farms, bamboo houses, pine forests, old monasteries, and people who greet you like family.
+                It&apos;s still pure Sikkim - no crowd, no noise. Just terraced farms, bamboo houses, pine forests, old monasteries, and people who greet you like family.
               </p>
               <p>
                 In 2016, Sikkim made global agricultural history by becoming the world&apos;s first 100% certified organic state. Over 75,000 hectares of agricultural land were certified chemical-free, banning synthetic fertilisers, toxic pesticides, and GMO seeds across the state.
@@ -225,24 +225,24 @@ export default async function StoreHomePage() {
         </div>
       </section>
 
-      {/* ── How to Order ── */}
+      {/* ── How to Order & Enquiries ── */}
       <section className="store-order-info">
         <div className="store-wrap">
           <div className="order-box">
-            <h2>Direct village orders.</h2>
+            <h2>Direct village dispatch &amp; enquiries.</h2>
             <p>
-              We do not use complicated checkout carts or automated warehouses. Tell us what you need, and we pack directly from the ridge, weighed and sealed with care.
+              Shop directly online through our secure cart and checkout, or get in touch with our village team for any enquiries and bulk harvest questions.
             </p>
             <div className="order-steps">
               <div className="step">
                 <span className="step-num">1</span>
                 <h4>Pick your items</h4>
-                <p>Browse our products and select what your kitchen needs.</p>
+                <p>Browse our products and add what your kitchen needs to your cart.</p>
               </div>
               <div className="step">
                 <span className="step-num">2</span>
-                <h4>Message on WhatsApp</h4>
-                <p>Send your list and delivery address to +91 62950 34036.</p>
+                <h4>Instant Checkout or Enquire</h4>
+                <p>Pay online securely via Razorpay or message +91 62950 34036 for enquiries.</p>
               </div>
               <div className="step">
                 <span className="step-num">3</span>
@@ -251,7 +251,7 @@ export default async function StoreHomePage() {
               </div>
             </div>
             <a href={whatsappAll} target="_blank" rel="noopener noreferrer" className="store-btn-solid store-btn-large">
-              Message the Village Store
+              Enquire with Village Store
             </a>
           </div>
         </div>
