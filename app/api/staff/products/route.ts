@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import {
   getAllProducts,
   saveProduct,
@@ -122,6 +123,11 @@ export async function POST(request: Request) {
     };
 
     const saved = await saveProduct(newProduct, body.syncRazorpay !== false);
+    try {
+      revalidatePath("/");
+      revalidatePath(`/${saved.slug}`);
+      revalidatePath("/staff");
+    } catch {}
     return NextResponse.json({ success: true, product: saved });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Failed to add product" }, { status: 500 });
@@ -199,6 +205,11 @@ export async function PATCH(request: Request) {
     };
 
     const saved = await saveProduct(updated, body.syncRazorpay !== false);
+    try {
+      revalidatePath("/");
+      revalidatePath(`/${saved.slug}`);
+      revalidatePath("/staff");
+    } catch {}
     return NextResponse.json({ success: true, product: saved });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Failed to update product" }, { status: 500 });
@@ -230,6 +241,11 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
+    try {
+      revalidatePath("/");
+      revalidatePath(`/${slug}`);
+      revalidatePath("/staff");
+    } catch {}
     return NextResponse.json({ success: true, slug });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Failed to remove product" }, { status: 500 });

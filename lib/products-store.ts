@@ -39,7 +39,7 @@ function readLocalProducts(): StoredProduct[] | null {
     const filePath = getProductsFilePath();
     if (fs.existsSync(filePath)) {
       const parsed = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
   } catch {}
   return null;
@@ -49,13 +49,13 @@ function writeLocalProducts(list: StoredProduct[]): void {
   try {
     fs.writeFileSync(getProductsFilePath(), JSON.stringify(list, null, 2), "utf-8");
   } catch (err) {
-    console.error("Failed to write products file:", err);
+    console.error("Failed to write products file locally:", err);
   }
 }
 
 /**
- * Encode compact metadata into Razorpay Item description (max 2048 chars)
- * so products created/edited in Staff Portal persist in Razorpay even on ephemeral serverless hosts.
+ * Builds compact metadata appended to Razorpay Item description.
+ * Razorpay description field allows up to 2048 characters.
  */
 function buildRazorpayItemDescription(product: StoredProduct): string {
   const meta = {
@@ -67,17 +67,21 @@ function buildRazorpayItemDescription(product: StoredProduct): string {
     giTag: Boolean(product.giTag),
     organic: product.organic !== false,
     featured: Boolean(product.featured),
-    altitude: product.altitude || "",
-    harvestSeason: product.harvestSeason || "",
-    tagline: product.tagline,
+    altitude: product.altitude || "1,200m – 1,800m",
+    harvestSeason: product.harvestSeason || "October – December",
+    tagline: product.tagline || product.name,
+    tastingNotes: product.tastingNotes || [],
+    traditionalUses: product.traditionalUses || [],
+    pairingSuggestions: product.pairingSuggestions || [],
   };
-  const metaStr = JSON.stringify(meta);
-  const maxDescLen = Math.max(100, 1950 - metaStr.length - product.slug.length - 20);
-  const shortDesc = (product.description || "").slice(0, maxDescLen);
-  return `${shortDesc}\n${CHAKUNG_TAG_PREFIX}${product.slug}]${metaStr}`;
+  const metaJson = JSON.stringify(meta);
+  const tagBlock = `\n${CHAKUNG_TAG_PREFIX}${product.slug}]${metaJson}`;
+  const maxDescLen = Math.max(50, 2040 - tagBlock.length);
+  const cleanDescription = (product.description || product.tagline || product.name).slice(0, maxDescLen);
+  return `${cleanDescription}${tagBlock}`;
 }
 
-function parseRazorpayItem(item: any): Partial<StoredProduct> | null {
+export function parseRazorpayItem(item: any): StoredProduct | null {
   const desc: string = item.description || "";
   const tagIdx = desc.indexOf(CHAKUNG_TAG_PREFIX);
   if (tagIdx === -1) return null;
@@ -85,23 +89,29 @@ function parseRazorpayItem(item: any): Partial<StoredProduct> | null {
   const closeBracket = desc.indexOf("]", tagIdx);
   if (closeBracket === -1) return null;
 
-  const slug = desc.slice(tagIdx + CHAKUNG_TAG_PREFIX.length, closeBracket).trim();
+  const slugFromTag = desc.slice(tagIdx + CHAKUNG_TAG_PREFIX.length, closeBracket).trim();
   const jsonPart = desc.slice(closeBracket + 1).trim();
-  const cleanDescription = desc.slice(0, tagIdx).trim();
+  const cleanDesc = desc.slice(0, tagIdx).trim();
 
   let meta: any = {};
   try {
     meta = JSON.parse(jsonPart);
-  } catch {}
+  } catch (e) {
+    console.error("Error parsing Razorpay item meta:", e);
+  }
+
+  const slug = meta.slug || slugFromTag;
+  if (!slug) return null;
 
   const amountRupees = item.amount ? Math.round(item.amount / 100) : 0;
+  const price = amountRupees > 0 ? `₹${amountRupees}` : meta.price || "₹100";
 
   return {
-    slug: meta.slug || slug,
-    name: item.name,
-    localName: meta.localName || item.name,
-    category: meta.category || "Grain",
-    price: amountRupees > 0 ? `₹${amountRupees}` : "₹0",
+    slug,
+    name: item.name || meta.name || slug,
+    localName: meta.localName || item.name || slug,
+    category: (meta.category as Product["category"]) || "Grain",
+    price,
     weight: meta.weight || "500g pack",
     image: meta.image || "",
     giTag: Boolean(meta.giTag),
@@ -110,14 +120,17 @@ function parseRazorpayItem(item: any): Partial<StoredProduct> | null {
     altitude: meta.altitude || "1,200m – 1,800m",
     harvestSeason: meta.harvestSeason || "October – December",
     tagline: meta.tagline || item.name,
-    description: cleanDescription || meta.tagline || item.name,
+    description: cleanDesc || meta.tagline || item.name,
+    tastingNotes: Array.isArray(meta.tastingNotes) ? meta.tastingNotes : ["Authentic Himalayan harvest"],
+    traditionalUses: Array.isArray(meta.traditionalUses) ? meta.traditionalUses : ["Traditional mountain kitchen preparation"],
+    pairingSuggestions: Array.isArray(meta.pairingSuggestions) ? meta.pairingSuggestions : ["Steamed mountain rice"],
     razorpayItemId: item.id,
     active: item.active !== false,
   };
 }
 
 /**
- * Fetch Razorpay Items tagged for Chakung Store.
+ * Fetch all Razorpay items tagged with [chakung:...]
  */
 export async function fetchRazorpayItems(): Promise<any[]> {
   const auth = getRazorpayAuth();
@@ -131,13 +144,15 @@ export async function fetchRazorpayItems(): Promise<any[]> {
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data.items) ? data.items : [];
-  } catch {
+  } catch (err) {
+    console.error("Error fetching Razorpay items:", err);
     return [];
   }
 }
 
 /**
- * Create or update a single product in Razorpay Items API.
+ * Creates or updates an item in Razorpay Items catalog.
+ * If product is inactive, deactivates it in Razorpay.
  */
 export async function syncProductToRazorpay(product: StoredProduct): Promise<string | undefined> {
   const auth = getRazorpayAuth();
@@ -153,6 +168,7 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
   };
 
   try {
+    // 1. If we already have the Razorpay Item ID, attempt a PATCH
     if (product.razorpayItemId) {
       const res = await fetch(`https://api.razorpay.com/v1/items/${product.razorpayItemId}`, {
         method: "PATCH",
@@ -168,7 +184,7 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
       }
     }
 
-    // Check if an item with this slug already exists in Razorpay
+    // 2. Look for existing Razorpay item by chakung slug
     const existingItems = await fetchRazorpayItems();
     const match = existingItems.find((it) => {
       const parsed = parseRazorpayItem(it);
@@ -190,22 +206,24 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
       }
     }
 
-    // Otherwise create a new Razorpay Item
-    const createRes = await fetch("https://api.razorpay.com/v1/items", {
-      method: "POST",
-      headers: {
-        Authorization: auth,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    // 3. If not found or product is active, create new Item
+    if (product.active !== false) {
+      const createRes = await fetch("https://api.razorpay.com/v1/items", {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (createRes.ok) {
-      const data = await createRes.json();
-      return data.id;
-    } else {
-      const err = await createRes.json();
-      console.error("Razorpay item create error:", err);
+      if (createRes.ok) {
+        const data = await createRes.json();
+        return data.id;
+      } else {
+        const err = await createRes.json();
+        console.error("Razorpay item create error:", err);
+      }
     }
   } catch (err) {
     console.error("Failed to sync product to Razorpay:", err);
@@ -215,18 +233,17 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
 }
 
 /**
- * Get all products for the storefront or staff portal.
- * Merges local JSON store (or initialProducts seed) with any Razorpay Item overrides
- * so edits/additions/deletions persist even across serverless cold starts.
+ * Returns all active products.
+ * Merges local file store (seeded with initial static products) with any Razorpay Item overrides.
  */
 export async function getAllProducts(includeInactive = false): Promise<StoredProduct[]> {
   let local = readLocalProducts();
-  if (!local) {
+  if (!local || local.length === 0) {
     local = seedProducts();
     writeLocalProducts(local);
   }
 
-  // Merge Razorpay Item records if available
+  // Fetch Razorpay items to sync and persist cloud state
   const rzpItems = await fetchRazorpayItems();
   if (rzpItems.length > 0) {
     const bySlug = new Map<string, StoredProduct>();
@@ -242,43 +259,12 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
       if (existing) {
         bySlug.set(parsed.slug, {
           ...existing,
-          name: parsed.name || existing.name,
-          localName: parsed.localName || existing.localName,
-          category: (parsed.category as Product["category"]) || existing.category,
-          price: parsed.price || existing.price,
-          weight: parsed.weight || existing.weight,
+          ...parsed,
           image: parsed.image || existing.image,
-          giTag: parsed.giTag ?? existing.giTag,
-          organic: parsed.organic ?? existing.organic,
-          featured: parsed.featured ?? existing.featured,
-          altitude: parsed.altitude || existing.altitude,
-          harvestSeason: parsed.harvestSeason || existing.harvestSeason,
-          tagline: parsed.tagline || existing.tagline,
-          razorpayItemId: parsed.razorpayItemId,
           active: parsed.active,
         });
       } else if (parsed.active !== false) {
-        bySlug.set(parsed.slug, {
-          slug: parsed.slug,
-          name: parsed.name || parsed.slug,
-          localName: parsed.localName || parsed.name || parsed.slug,
-          tagline: parsed.tagline || "",
-          description: parsed.description || "",
-          category: (parsed.category as Product["category"]) || "Grain",
-          price: parsed.price || "₹100",
-          weight: parsed.weight || "500g pack",
-          image: parsed.image || "",
-          giTag: Boolean(parsed.giTag),
-          organic: parsed.organic !== false,
-          featured: Boolean(parsed.featured),
-          altitude: parsed.altitude || "1,200m – 1,800m",
-          harvestSeason: parsed.harvestSeason || "October – December",
-          tastingNotes: ["Authentic Himalayan harvest"],
-          traditionalUses: ["Traditional mountain kitchen preparation"],
-          pairingSuggestions: ["Steamed mountain rice"],
-          razorpayItemId: parsed.razorpayItemId,
-          active: true,
-        });
+        bySlug.set(parsed.slug, parsed);
       }
     }
 
@@ -338,8 +324,21 @@ export async function deleteProduct(slug: string): Promise<boolean> {
   target.active = false;
   target.updatedAt = new Date().toISOString();
 
-  // Deactivate on Razorpay Items so it stays removed even on serverless cold starts
+  // Deactivate on Razorpay Items so it stays removed even across serverless restarts
   await syncProductToRazorpay(target);
+
+  // If Razorpay item existed, delete it from Razorpay
+  if (target.razorpayItemId) {
+    const auth = getRazorpayAuth();
+    if (auth) {
+      try {
+        await fetch(`https://api.razorpay.com/v1/items/${target.razorpayItemId}`, {
+          method: "DELETE",
+          headers: { Authorization: auth },
+        });
+      } catch {}
+    }
+  }
 
   const remaining = all.filter((p) => p.slug !== slug);
   writeLocalProducts(remaining);
