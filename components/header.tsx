@@ -1,13 +1,21 @@
 "use client";
 
+import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/cart-context";
 
 export function Header() {
   const { totalItems, setIsCartOpen } = useCart();
+  const menuRef = useRef<HTMLDetailsElement>(null);
   const whatsappAll =
     "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20have%20an%20enquiry%20regarding%20organic%20produce.";
+
+  const closeMobileMenu = () => {
+    if (menuRef.current) {
+      menuRef.current.open = false;
+    }
+  };
 
   return (
     <header className="store-header">
@@ -86,24 +94,27 @@ export function Header() {
             Enquiries
           </a>
 
-          <details className="store-menu">
+          <details ref={menuRef} className="store-menu">
             <summary className="store-menu-btn" aria-label="Toggle navigation menu">
               <span className="menu-icon-bar" />
               <span className="menu-icon-bar" />
             </summary>
             <div className="store-menu-dropdown">
               <nav className="store-menu-links">
-                <Link href="/#products" className="menu-link-item">
+                <Link href="/#products" className="menu-link-item" onClick={closeMobileMenu}>
                   <span>Catalogue</span>
-                  <span className="menu-sub">12 ridge products</span>
+                  <span className="menu-sub">All ridge produce</span>
                 </Link>
-                <Link href="/#sikkim-organic" className="menu-link-item">
+                <Link href="/#sikkim-organic" className="menu-link-item" onClick={closeMobileMenu}>
                   <span>Why Organic</span>
                   <span className="menu-sub">100% Certified State</span>
                 </Link>
                 <button
                   type="button"
-                  onClick={() => setIsCartOpen(true)}
+                  onClick={() => {
+                    closeMobileMenu();
+                    setIsCartOpen(true);
+                  }}
                   className="menu-link-item"
                   style={{ textAlign: "left", width: "100%", background: "none", border: "none", cursor: "pointer", font: "inherit" }}
                 >
@@ -115,6 +126,7 @@ export function Header() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="menu-link-item menu-link-highlight"
+                  onClick={closeMobileMenu}
                 >
                   <span>Enquiries on WhatsApp</span>
                   <span className="menu-sub">+91 62950 34036</span>
@@ -124,6 +136,7 @@ export function Header() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="menu-link-item"
+                  onClick={closeMobileMenu}
                 >
                   <span>The Homestay</span>
                   <span className="menu-sub">chakung.com ↗</span>

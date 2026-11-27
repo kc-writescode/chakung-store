@@ -14,7 +14,7 @@ export default function NotFound() {
         <Link href="/" className="store-btn-solid">
           ← Return to Store Home
         </Link>
-        <Link href="/#products" className="store-btn-ghost">
+        <Link href="/#products" className="cta-add-cart">
           Browse All Products
         </Link>
       </div>
