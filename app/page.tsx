@@ -104,13 +104,13 @@ export default async function StoreHomePage() {
                 </div>
 
                 <div className="featured-card-footer">
-                  <span className="weight-tag">{product.weight}</span>
-                  <div className="card-buttons">
+                  <div className="featured-footer-meta">
+                    <span className="weight-tag">{product.weight}</span>
                     <Link href={`/${product.slug}`} className="view-link">
-                      Details →
+                      View Details →
                     </Link>
-                    <AddToCartButton product={product} />
                   </div>
+                  <AddToCartButton product={product} />
                 </div>
               </article>
             ))}

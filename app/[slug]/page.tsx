@@ -124,6 +124,27 @@ export default async function ProductDetailPage({
             </div>
 
             <p className="product-tagline-lead">&ldquo;{product.tagline}&rdquo;</p>
+
+            {/* Primary Order Action - positioned above the fold for immediate visibility */}
+            <div className="product-action-box">
+              <AddToCartButton product={product} showBuyNow />
+
+              <div className="alt-order-wrap">
+                <a
+                  href={waEnquiryLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wa-subtle-link"
+                >
+                  💬 Have questions? Enquire on WhatsApp
+                </a>
+              </div>
+
+              <p className="order-guarantee-note">
+                🌿 100% certified organic origin. Direct from village farmers in Chakung, West Sikkim. Secure online payment powered by Razorpay (UPI, Google Pay, Cards, Netbanking) with India Post Speed Post tracking.
+              </p>
+            </div>
+
             <p className="product-full-desc">{product.description}</p>
 
             {/* Tasting Notes */}
@@ -158,26 +179,6 @@ export default async function ProductDetailPage({
                   </span>
                 ))}
               </div>
-            </div>
-
-            {/* Order Action */}
-            <div className="product-action-box">
-              <AddToCartButton product={product} showBuyNow />
-
-              <div className="alt-order-wrap">
-                <a
-                  href={waEnquiryLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="wa-subtle-link"
-                >
-                  💬 Have questions? Enquire on WhatsApp
-                </a>
-              </div>
-
-              <p className="order-guarantee-note">
-                🌿 100% certified organic origin. Direct from village farmers in Chakung, West Sikkim. Secure online payment powered by Razorpay (UPI, Google Pay, Cards, Netbanking) with India Post Speed Post tracking.
-              </p>
             </div>
           </div>
         </div>

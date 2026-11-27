@@ -432,6 +432,7 @@ export default function CheckoutPage() {
                                 alt={product.name}
                                 width={54}
                                 height={54}
+                                unoptimized={product.image.startsWith("data:")}
                                 className="item-thumb"
                               />
                             ) : (

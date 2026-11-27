@@ -10,7 +10,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
+  addItem: (product: Product, quantity?: number, openDrawer?: boolean) => void;
   removeItem: (slug: string) => void;
   updateQuantity: (slug: string, quantity: number) => void;
   clearCart: () => void;
@@ -53,7 +53,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, mounted]);
 
-  const addItem = (product: Product, quantity = 1) => {
+  const addItem = (product: Product, quantity = 1, openDrawer = true) => {
     setItems((prev) => {
       const existing = prev.find((item) => item.product.slug === product.slug);
       if (existing) {
@@ -65,7 +65,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { product, quantity }];
     });
-    setIsCartOpen(true);
+    if (openDrawer) {
+      setIsCartOpen(true);
+    }
   };
 
   const removeItem = (slug: string) => {
