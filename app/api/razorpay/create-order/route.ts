@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getProduct, getPriceNumber } from "@/content/products";
+import { getPriceNumber } from "@/content/products";
+import { getProductBySlug } from "@/lib/products-store";
 
 export async function POST(request: Request) {
   try {
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
     const verifiedItems = [];
 
     for (const item of items) {
-      const product = getProduct(item.slug);
+      const product = await getProductBySlug(item.slug);
       if (!product) {
         return NextResponse.json(
           { error: `Product not found: ${item.slug}` },

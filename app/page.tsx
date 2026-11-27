@@ -1,9 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { products, featuredProducts } from "@/content/products";
+import { getAllProducts } from "@/lib/products-store";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
-export default function StoreHomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function StoreHomePage() {
+  const products = await getAllProducts();
+  const featuredProducts = products.filter((p) => p.featured);
   const whatsappAll = "https://wa.me/916295034036?text=Hello%20Chakung%20Store%2C%20I%20would%20like%20to%20order%20organic%20produce.";
 
   return (
