@@ -6,6 +6,7 @@ import { getProductBySlug } from "@/lib/products-store";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -17,7 +18,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await getProductBySlug(slug);
 
-  if (!product) return {};
+  if (!product) {
+    return {
+      title: "Product Not Found · Chakung Store",
+      description: "The requested organic mountain harvest is no longer in the Chakung Store catalogue.",
+    };
+  }
 
   return {
     title: `${product.name} (${product.localName}) · Chakung Store`,

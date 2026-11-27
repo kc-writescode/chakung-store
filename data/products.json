@@ -397,35 +397,5 @@
     "razorpayItemId": "item_U5AsD1PtpYIxtT",
     "active": true,
     "updatedAt": "2026-11-27T11:37:51.114Z"
-  },
-  {
-    "slug": "wfasdadf",
-    "name": "krishna",
-    "localName": "chaitanya",
-    "category": "Grain",
-    "price": "₹222",
-    "weight": "500g pack",
-    "image": "/products/Minimal Mountain Sunrise Emblem.png",
-    "giTag": false,
-    "organic": true,
-    "featured": true,
-    "altitude": "1,200m – 1,800m",
-    "harvestSeason": "October – December",
-    "tagline": "sdfgsdfg",
-    "description": "sdfgsdfgsdfgsdfhsdfh",
-    "tastingNotes": [
-      "Earthy mountain aroma",
-      "Natural sweetness"
-    ],
-    "traditionalUses": [
-      "Traditional Sikkimese kitchen preparation"
-    ],
-    "pairingSuggestions": [
-      "Steamed mountain rice",
-      "Dalle chilli chutney"
-    ],
-    "razorpayItemId": "item_U5C44DOHOqe2p0",
-    "active": true,
-    "updatedAt": "2026-11-27T12:11:00.000Z"
   }
 ]

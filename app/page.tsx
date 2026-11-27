@@ -4,6 +4,7 @@ import { getAllProducts } from "@/lib/products-store";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function StoreHomePage() {
   const products = await getAllProducts();

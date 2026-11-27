@@ -130,9 +130,11 @@ export async function POST(request: Request) {
 
     const saved = await saveProduct(newProduct, body.syncRazorpay !== false);
     try {
-      revalidatePath("/");
-      revalidatePath(`/${saved.slug}`);
-      revalidatePath("/staff");
+      revalidatePath("/", "layout");
+      revalidatePath("/", "page");
+      revalidatePath(`/${saved.slug}`, "page");
+      revalidatePath(`/${saved.slug}`, "layout");
+      revalidatePath("/staff", "page");
     } catch {}
     return NextResponse.json({ success: true, product: saved });
   } catch (err: any) {
@@ -212,9 +214,11 @@ export async function PATCH(request: Request) {
 
     const saved = await saveProduct(updated, body.syncRazorpay !== false);
     try {
-      revalidatePath("/");
-      revalidatePath(`/${saved.slug}`);
-      revalidatePath("/staff");
+      revalidatePath("/", "layout");
+      revalidatePath("/", "page");
+      revalidatePath(`/${saved.slug}`, "page");
+      revalidatePath(`/${saved.slug}`, "layout");
+      revalidatePath("/staff", "page");
     } catch {}
     return NextResponse.json({ success: true, product: saved });
   } catch (err: any) {
@@ -248,9 +252,11 @@ export async function DELETE(request: Request) {
     }
 
     try {
-      revalidatePath("/");
-      revalidatePath(`/${slug}`);
-      revalidatePath("/staff");
+      revalidatePath("/", "layout");
+      revalidatePath("/", "page");
+      revalidatePath(`/${slug}`, "page");
+      revalidatePath(`/${slug}`, "layout");
+      revalidatePath("/staff", "page");
     } catch {}
     return NextResponse.json({ success: true, slug });
   } catch (err: any) {

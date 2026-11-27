@@ -17,8 +17,9 @@ function getRazorpayAuth(): string | null {
   return `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString("base64")}`;
 }
 
-// In-memory cache to guarantee instant read-your-own-writes consistency across async turns
+// In-memory cache to guarantee instant read-your-own-writes consistency
 let inMemoryProducts: StoredProduct[] | null = null;
+let inMemoryDeletedSlugs: Set<string> | null = null;
 
 function getLocalProductsPath(): string {
   return path.join(process.cwd(), "data", "products.json");
@@ -28,16 +29,95 @@ function getTmpProductsPath(): string {
   return path.join("/tmp", "chakung_products.json");
 }
 
+function getLocalDeletedSlugsPath(): string {
+  return path.join(process.cwd(), "data", "deleted-slugs.json");
+}
+
+function getTmpDeletedSlugsPath(): string {
+  return path.join("/tmp", "chakung_deleted_slugs.json");
+}
+
+export function getDeletedSlugs(): Set<string> {
+  if (inMemoryDeletedSlugs) return inMemoryDeletedSlugs;
+  const slugs = new Set<string>();
+
+  // 1. Read from repo file
+  try {
+    const p = getLocalDeletedSlugsPath();
+    if (fs.existsSync(p)) {
+      const arr = JSON.parse(fs.readFileSync(p, "utf-8"));
+      if (Array.isArray(arr)) {
+        arr.forEach((s) => {
+          if (s) slugs.add(String(s).trim());
+        });
+      }
+    }
+  } catch {}
+
+  // 2. Read from /tmp file (serverless persistence across requests in container)
+  try {
+    const p = getTmpDeletedSlugsPath();
+    if (fs.existsSync(p)) {
+      const arr = JSON.parse(fs.readFileSync(p, "utf-8"));
+      if (Array.isArray(arr)) {
+        arr.forEach((s) => {
+          if (s) slugs.add(String(s).trim());
+        });
+      }
+    }
+  } catch {}
+
+  inMemoryDeletedSlugs = slugs;
+  return slugs;
+}
+
+export function recordDeletedSlug(slug: string): void {
+  const slugs = getDeletedSlugs();
+  slugs.add(slug);
+  inMemoryDeletedSlugs = slugs;
+  const arr = Array.from(slugs);
+
+  try {
+    const dir = path.join(process.cwd(), "data");
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(getLocalDeletedSlugsPath(), JSON.stringify(arr, null, 2), "utf-8");
+  } catch {}
+
+  try {
+    fs.writeFileSync(getTmpDeletedSlugsPath(), JSON.stringify(arr, null, 2), "utf-8");
+  } catch {}
+}
+
+export function unrecordDeletedSlug(slug: string): void {
+  const slugs = getDeletedSlugs();
+  slugs.delete(slug);
+  inMemoryDeletedSlugs = slugs;
+  const arr = Array.from(slugs);
+
+  try {
+    fs.writeFileSync(getLocalDeletedSlugsPath(), JSON.stringify(arr, null, 2), "utf-8");
+  } catch {}
+
+  try {
+    fs.writeFileSync(getTmpDeletedSlugsPath(), JSON.stringify(arr, null, 2), "utf-8");
+  } catch {}
+}
+
 function seedProducts(): StoredProduct[] {
-  return initialProducts.map((p) => ({
-    ...p,
-    active: true,
-  }));
+  const deleted = getDeletedSlugs();
+  return initialProducts
+    .filter((p) => !deleted.has(p.slug))
+    .map((p) => ({
+      ...p,
+      active: true,
+    }));
 }
 
 function readLocalProducts(): StoredProduct[] | null {
+  const deleted = getDeletedSlugs();
+
   if (inMemoryProducts && inMemoryProducts.length > 0) {
-    return [...inMemoryProducts];
+    return inMemoryProducts.filter((p) => !deleted.has(p.slug));
   }
 
   const map = new Map<string, StoredProduct>();
@@ -49,7 +129,7 @@ function readLocalProducts(): StoredProduct[] | null {
       const parsed = JSON.parse(fs.readFileSync(filePath, "utf-8"));
       if (Array.isArray(parsed)) {
         for (const p of parsed) {
-          if (p.slug) map.set(p.slug, p);
+          if (p.slug && !deleted.has(p.slug)) map.set(p.slug, p);
         }
       }
     }
@@ -62,7 +142,7 @@ function readLocalProducts(): StoredProduct[] | null {
       const tmpParsed = JSON.parse(fs.readFileSync(tmpPath, "utf-8"));
       if (Array.isArray(tmpParsed)) {
         for (const p of tmpParsed) {
-          if (p.slug) {
+          if (p.slug && !deleted.has(p.slug)) {
             const existing = map.get(p.slug);
             if (!existing || (p.updatedAt && (!existing.updatedAt || p.updatedAt > existing.updatedAt))) {
               map.set(p.slug, p);
@@ -74,7 +154,7 @@ function readLocalProducts(): StoredProduct[] | null {
   } catch {}
 
   if (map.size > 0) {
-    const list = Array.from(map.values());
+    const list = Array.from(map.values()).filter((p) => !deleted.has(p.slug));
     inMemoryProducts = list;
     return list;
   }
@@ -83,17 +163,19 @@ function readLocalProducts(): StoredProduct[] | null {
 }
 
 function writeLocalProducts(list: StoredProduct[]): void {
-  inMemoryProducts = [...list];
+  const deleted = getDeletedSlugs();
+  const cleaned = list.filter((p) => !deleted.has(p.slug));
+  inMemoryProducts = [...cleaned];
 
   // Attempt write to data/products.json
   try {
     const localDir = path.join(process.cwd(), "data");
     if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
-    fs.writeFileSync(getLocalProductsPath(), JSON.stringify(list, null, 2), "utf-8");
+    fs.writeFileSync(getLocalProductsPath(), JSON.stringify(cleaned, null, 2), "utf-8");
   } catch {
     // Read-only filesystem (Vercel serverless) — fallback to /tmp
     try {
-      fs.writeFileSync(getTmpProductsPath(), JSON.stringify(list, null, 2), "utf-8");
+      fs.writeFileSync(getTmpProductsPath(), JSON.stringify(cleaned, null, 2), "utf-8");
     } catch (tmpErr) {
       console.error("Failed to write products to /tmp fallback:", tmpErr);
     }
@@ -289,25 +371,46 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
 /**
  * Returns all active products.
  * Merges local file store (seeded with initial static products) with any Razorpay Item overrides.
+ * Strictly excludes any product in deletedSlugs.
  */
 export async function getAllProducts(includeInactive = false): Promise<StoredProduct[]> {
+  const deletedSlugs = getDeletedSlugs();
+
   let local = readLocalProducts();
   if (!local || local.length === 0) {
     local = seedProducts();
     writeLocalProducts(local);
   }
 
+  // Filter out deleted items from local
+  local = local.filter((p) => !deletedSlugs.has(p.slug));
+
   // Fetch Razorpay items to sync and persist cloud state
   const rzpItems = await fetchRazorpayItems();
   if (rzpItems.length > 0) {
     const bySlug = new Map<string, StoredProduct>();
     for (const p of local) {
-      bySlug.set(p.slug, p);
+      if (!deletedSlugs.has(p.slug)) {
+        bySlug.set(p.slug, p);
+      }
     }
 
     for (const rzpItem of rzpItems) {
+      // Check if this item is marked as DELETED
+      const desc = rzpItem.description || "";
+      if (desc.includes("[chakung:DELETED:")) {
+        const m = desc.match(/\[chakung:DELETED:([^\]]+)\]/);
+        if (m && m[1]) {
+          const dSlug = m[1].trim();
+          recordDeletedSlug(dSlug);
+          bySlug.delete(dSlug);
+        }
+        continue;
+      }
+
       const parsed = parseRazorpayItem(rzpItem);
       if (!parsed || !parsed.slug) continue;
+      if (deletedSlugs.has(parsed.slug)) continue;
 
       const existing = bySlug.get(parsed.slug);
       if (existing) {
@@ -326,21 +429,34 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
       }
     }
 
-    local = Array.from(bySlug.values());
+    local = Array.from(bySlug.values()).filter((p) => !deletedSlugs.has(p.slug));
   }
 
-  return includeInactive ? local : local.filter((p) => p.active !== false);
+  return includeInactive
+    ? local.filter((p) => !deletedSlugs.has(p.slug))
+    : local.filter((p) => p.active !== false && !deletedSlugs.has(p.slug));
 }
 
 export async function getProductBySlug(slug: string): Promise<StoredProduct | undefined> {
+  if (!slug) return undefined;
+  const deletedSlugs = getDeletedSlugs();
+  if (deletedSlugs.has(slug)) return undefined;
+
   const all = await getAllProducts(false);
-  return all.find((p) => p.slug === slug);
+  const found = all.find((p) => p.slug === slug);
+  if (!found || found.active === false || deletedSlugs.has(found.slug)) {
+    return undefined;
+  }
+  return found;
 }
 
 export async function saveProduct(
   productInput: StoredProduct,
   syncRazorpay = true
 ): Promise<StoredProduct> {
+  // If the product was previously deleted, unrecord it
+  unrecordDeletedSlug(productInput.slug);
+
   const all = await getAllProducts(true);
   const idx = all.findIndex((p) => p.slug === productInput.slug);
 
@@ -378,27 +494,68 @@ export async function saveProduct(
 }
 
 export async function deleteProduct(slug: string): Promise<boolean> {
+  if (!slug) return false;
+
+  // Immediately record slug in persistent deleted registry
+  recordDeletedSlug(slug);
+
   const all = await getAllProducts(true);
-  const idx = all.findIndex((p) => p.slug === slug);
-  if (idx === -1) return false;
+  const target = all.find((p) => p.slug === slug);
 
-  const target = all[idx];
-  target.active = false;
-  target.updatedAt = new Date().toISOString();
+  // Remove from in-memory cache
+  if (inMemoryProducts) {
+    inMemoryProducts = inMemoryProducts.filter((p) => p.slug !== slug);
+  }
 
-  // Deactivate on Razorpay Items so it stays removed even across serverless restarts
-  await syncProductToRazorpay(target);
+  // Persist deletion to Razorpay cloud
+  const auth = getRazorpayAuth();
+  if (auth) {
+    try {
+      if (target?.razorpayItemId) {
+        // Deactivate and mark deleted in Razorpay
+        await fetch(`https://api.razorpay.com/v1/items/${target.razorpayItemId}`, {
+          method: "PATCH",
+          headers: {
+            Authorization: auth,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            active: false,
+            description: `[chakung:DELETED:${slug}]`,
+          }),
+        });
 
-  // If Razorpay item existed, delete it from Razorpay
-  if (target.razorpayItemId) {
-    const auth = getRazorpayAuth();
-    if (auth) {
-      try {
+        // Also call DELETE on Razorpay
         await fetch(`https://api.razorpay.com/v1/items/${target.razorpayItemId}`, {
           method: "DELETE",
           headers: { Authorization: auth },
         });
-      } catch {}
+      }
+
+      // Check for any other Razorpay items matching this slug
+      const rzpItems = await fetchRazorpayItems();
+      for (const it of rzpItems) {
+        const desc = it.description || "";
+        if (desc.includes(`${CHAKUNG_TAG_PREFIX}${slug}]`) || it.id === target?.razorpayItemId) {
+          await fetch(`https://api.razorpay.com/v1/items/${it.id}`, {
+            method: "PATCH",
+            headers: {
+              Authorization: auth,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              active: false,
+              description: `[chakung:DELETED:${slug}]`,
+            }),
+          });
+          await fetch(`https://api.razorpay.com/v1/items/${it.id}`, {
+            method: "DELETE",
+            headers: { Authorization: auth },
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Razorpay item cleanup error for slug:", slug, err);
     }
   }
 
