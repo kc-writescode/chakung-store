@@ -418,33 +418,38 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
       const existing = bySlug.get(parsed.slug);
       if (existing) {
         // Determine which source is fresher.
-        // - `existing` = from committed data/products.json (may have old image, no updatedAt for seed products)
-        //   OR from /tmp if the same container handled a previous save (has updatedAt).
-        // - `parsed`   = from Razorpay metadata (reflects the most recent staff-portal save across ANY container).
+        // - `existing` = from committed data/products.json (original seed data, no updatedAt)
+        //   OR from /tmp if the same serverless container handled a previous save (has updatedAt).
+        // - `parsed`   = from Razorpay metadata (always reflects the LATEST staff-portal save,
+        //   because saveProduct() PATCHes Razorpay with the full product payload including updatedAt).
         //
-        // Key rule: if Razorpay metadata has an updatedAt that is NEWER than the local record,
-        // the staff portal updated this product more recently — use Razorpay's image (and all other fields).
+        // Rule: whichever source has the NEWER updatedAt wins for ALL fields (name, price, description,
+        // tagline, image, etc.).  Seed products have no updatedAt, so Razorpay always wins for them
+        // once any staff edit has been made.
         const existingTs = existing.updatedAt || "";
-        // parsed.updatedAt comes from the meta JSON blob we embed in the Razorpay description.
-        // Fallback to Razorpay's own updated_at unix timestamp.
-        const parsedTs = parsed.updatedAt ||
+        const parsedTs =
+          parsed.updatedAt ||
           (rzpItem.updated_at ? new Date(rzpItem.updated_at * 1000).toISOString() : "");
 
-        // Razorpay is the source of truth for the image if it was saved more recently,
-        // OR if the local entry has no updatedAt (seed product that was never saved through staff portal).
         const rzpIsNewer = parsedTs && (!existingTs || parsedTs > existingTs);
 
+        // Merge: the NEWER source's fields take precedence over the OLDER source's fields.
+        const merged = rzpIsNewer
+          ? { ...existing, ...parsed }   // Razorpay wins  (staff made a more recent edit)
+          : { ...parsed,   ...existing }; // Local wins     (dev environment / just-written /tmp)
+
+        // Image: use the winning source, fall back to the other if empty.
         const resolvedImage = rzpIsNewer
-          ? (parsed.image || existing.image || "")   // Razorpay has a newer staff-updated image
-          : (existing.image || parsed.image || "");  // Local (or in-memory) has a newer/equal image
+          ? (parsed.image   || existing.image || "")
+          : (existing.image || parsed.image   || "");
 
         bySlug.set(parsed.slug, {
-          ...parsed,
-          ...existing,
+          ...merged,
           image: resolvedImage,
+          // razorpayItemId is always authoritative from Razorpay itself
           razorpayItemId: rzpItem.id || existing.razorpayItemId,
           active: existing.active !== undefined ? existing.active : parsed.active,
-          // Always prefer the more recent updatedAt so future merges stay correct
+          // Carry the most recent timestamp forward so future merges keep comparing correctly
           updatedAt: parsedTs && existingTs
             ? (parsedTs > existingTs ? parsedTs : existingTs)
             : (parsedTs || existingTs || undefined),
