@@ -387,6 +387,7 @@ export default function StaffPage() {
     setEditingSlug(null);
     setFormState(EMPTY_FORM);
     setFormError("");
+    fetchGalleryImages();
     setModalOpen(true);
   };
 
@@ -413,6 +414,7 @@ export default function StaffPage() {
       syncRazorpay: true,
     });
     setFormError("");
+    fetchGalleryImages();
     setModalOpen(true);
   };
 
@@ -486,6 +488,7 @@ export default function StaffPage() {
       const data = await res.json();
       if (res.ok && data.url) {
         setFormState((prev) => ({ ...prev, image: data.url }));
+        setGalleryImages((prev) => (prev.includes(data.url) ? prev : [data.url, ...prev]));
         if (data.storage === "local") fetchGalleryImages();
       } else {
         setFormError(data.error || "Image upload failed");
@@ -1415,6 +1418,11 @@ export default function StaffPage() {
                         className="gallery-select"
                       >
                         <option value="">Choose from existing /products/...</option>
+                        {formState.image && !galleryImages.includes(formState.image) && (
+                          <option value={formState.image}>
+                            Selected: {formState.image.split("/").pop()}
+                          </option>
+                        )}
                         {galleryImages.map((imgUrl) => (
                           <option key={imgUrl} value={imgUrl}>
                             {imgUrl.replace("/products/", "")}

@@ -3,8 +3,6 @@
     "slug": "dalle-khursani",
     "name": "Dalle Khursani",
     "localName": "दल्ले खुर्सानी (Himalayan Cherry Chilli)",
-    "tagline": "Sikkim's celebrated round chilli — fiery, fruity, legendary.",
-    "description": "Grown only in the hill districts of Sikkim and Darjeeling, the Dalle Khursani is one of the world's most pungent chillies (100,000 to 350,000 SHU). It holds an official Geographical Indication (GI) tag from the Government of India. Sun-dried whole over wicker mats on the ridge. Imparts a bright, fruity warmth before delivering its trademark Himalayan heat.",
     "category": "Spice",
     "price": "₹180",
     "weight": "50g pouch",
@@ -14,6 +12,8 @@
     "featured": true,
     "altitude": "1,200m – 1,800m",
     "harvestSeason": "October – December",
+    "tagline": "Sikkim's celebrated round chilli — fiery, fruity, legendary.",
+    "description": "Grown only in the hill districts of Sikkim and Darjeeling, the Dalle Khursani is one of the world's most pungent chillies (100,000 to 350,000 SHU). It holds an official Geographical Indication (GI) tag from the Government of India. Sun-dried whole over wicker mats on the ridge. Imparts a bright, fruity warmth before delivering its trademark Himalayan heat.",
     "tastingNotes": [
       "Cherry aroma",
       "Smoky floral heat",
@@ -30,15 +30,14 @@
       "Roast mountain pork",
       "Dal bhat"
     ],
+    "razorpayItemId": "item_U5AxrmvxppqDET",
     "active": true,
-    "razorpayItemId": "item_U5AxrmvxppqDET"
+    "updatedAt": "2026-11-27T12:01:48.529Z"
   },
   {
     "slug": "gundruk",
     "name": "Gundruk",
     "localName": "गुन्द्रुक (Fermented Mustard & Radish Leaves)",
-    "tagline": "Fermented greens — the irreplaceable soul of a Sikkim mountain kitchen.",
-    "description": "Gundruk is Sikkim's most revered traditional food. Mustard and radish leaves harvested before the frost are wilted in the sun, packed tightly into earthen jars, and fermented naturally for weeks in cool mountain air. Once tangy and sour, they are dried completely in the sun. Probiotic-rich, deeply savoury, and protected with a GI tag.",
     "category": "Ferment",
     "price": "₹150",
     "weight": "100g pack",
@@ -48,6 +47,8 @@
     "featured": true,
     "altitude": "1,300m – 1,900m",
     "harvestSeason": "November – January",
+    "tagline": "Fermented greens — the irreplaceable soul of a Sikkim mountain kitchen.",
+    "description": "Gundruk is Sikkim's most revered traditional food. Mustard and radish leaves harvested before the frost are wilted in the sun, packed tightly into earthen jars, and fermented naturally for weeks in cool mountain air. Once tangy and sour, they are dried completely in the sun. Probiotic-rich, deeply savoury, and protected with a GI tag.",
     "tastingNotes": [
       "Lactic tang",
       "Earthy umami",
@@ -63,23 +64,24 @@
       "Hot rice",
       "Dalle chilli chutney"
     ],
-    "active": true,
-    "razorpayItemId": "item_U5Axt1aHxsUHAj"
+    "razorpayItemId": "item_U5Axt1aHxsUHAj",
+    "active": true
   },
   {
     "slug": "buckwheat-phapar",
     "name": "Buckwheat",
     "localName": "Phapar · फापर (Himalayan Tartary Buckwheat)",
-    "tagline": "High-altitude grain — gluten-free, nutty, ancient.",
-    "description": "Cultivated on alpine slopes above 1,400 meters where rice cannot thrive. Tartary buckwheat is ancient, hardy, and naturally free of gluten. Exceptionally dense in rutin, magnesium, and dietary fibre. Cleaned and stone-ground into wholesome grey-brown flour or roasted whole as a hearty mountain trail snack.",
     "category": "Grain",
     "price": "₹95",
     "weight": "250g pack",
     "image": "/products/buckwheat-phapar.jpg",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,400m – 2,200m",
     "harvestSeason": "September – October",
+    "tagline": "High-altitude grain — gluten-free, nutty, ancient.",
+    "description": "Cultivated on alpine slopes above 1,400 meters where rice cannot thrive. Tartary buckwheat is ancient, hardy, and naturally free of gluten. Exceptionally dense in rutin, magnesium, and dietary fibre. Cleaned and stone-ground into wholesome grey-brown flour or roasted whole as a hearty mountain trail snack.",
     "tastingNotes": [
       "Nutty and toasted",
       "Mineral finish",
@@ -95,24 +97,24 @@
       "Gundruk soup",
       "Mountain wildflower honey"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5AxuDEXcuxxPc"
+    "razorpayItemId": "item_U5AxuDEXcuxxPc",
+    "active": true
   },
   {
     "slug": "soybean-bhatmas",
     "name": "Yellow Soybeans (Bhatmas)",
     "localName": "Bhatmas · पहेँलो भटमास (Hill Soya)",
-    "tagline": "Sun-dried Sikkim golden soya — the ridge's everyday protein.",
-    "description": "Bhatmas is an essential part of daily life across West Sikkim. Smallholder farmers cultivate non-GMO, organic soya varieties on hillside terraces. Small, firm, and golden-brown. Used dry-roasted as an unhurried evening snack with garlic and salt, boiled into nourishing winter broths, or fermented into traditional kinema.",
     "category": "Legume",
     "price": "₹230",
     "weight": "500g pack",
     "image": "/products/Yellow-Soybeans.png",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,000m – 1,700m",
     "harvestSeason": "November – December",
+    "tagline": "Sun-dried Sikkim golden soya — the ridge's everyday protein.",
+    "description": "Bhatmas is an essential part of daily life across West Sikkim. Smallholder farmers cultivate non-GMO, organic soya varieties on hillside terraces. Small, firm, and golden-brown. Used dry-roasted as an unhurried evening snack with garlic and salt, boiled into nourishing winter broths, or fermented into traditional kinema.",
     "tastingNotes": [
       "Rich nutty crunch",
       "Toasted grain aroma",
@@ -128,24 +130,24 @@
       "Dalle chilli",
       "Millet beer (Tongba)"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5AxvRLWESAIyE"
+    "razorpayItemId": "item_U5AxvRLWESAIyE",
+    "active": true
   },
   {
     "slug": "white-rajma-chitra",
     "name": "White Rajma",
     "localName": "Seto Rajma · सेतो राज्मा (Himalayan White Kidney Beans)",
-    "tagline": "High-altitude white kidney beans — creamy, melt-in-mouth, naturally sweet.",
-    "description": "Grown in pristine, chemical-free mountain terraces of West Sikkim. Himalayan White Rajma is celebrated for its tender skin and rich, buttery texture that dissolves luxuriously when slow-cooked with fresh ginger, garlic, and mountain herbs. High in clean plant protein and dietary fibre.",
     "category": "Legume",
     "price": "₹180",
     "weight": "500g pack",
     "image": "/products/white-rajma-chitra.png",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,400m – 2,000m",
     "harvestSeason": "October – November",
+    "tagline": "High-altitude white kidney beans — creamy, melt-in-mouth, naturally sweet.",
+    "description": "Grown in pristine, chemical-free mountain terraces of West Sikkim. Himalayan White Rajma is celebrated for its tender skin and rich, buttery texture that dissolves luxuriously when slow-cooked with fresh ginger, garlic, and mountain herbs. High in clean plant protein and dietary fibre.",
     "tastingNotes": [
       "Silky creamy texture",
       "Sweet earthy finish",
@@ -161,24 +163,24 @@
       "Village ghee",
       "Dalle Khursani pickle"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5Axwe1jZti9YD"
+    "razorpayItemId": "item_U5Axwe1jZti9YD",
+    "active": true
   },
   {
     "slug": "millet-powder-roti",
     "name": "Millet Powder for Roti",
     "localName": "Kodo ko Pitho · कोदोको पिठो (Stone-Ground Ragi Flour)",
-    "tagline": "Traditional stone-ground finger millet flour for soft, wholesome mountain rotis.",
-    "description": "Milled from 100% organic Himalayan finger millet (Kodo) grown on sun-drenched hill terraces in West Sikkim. Slowly stone-ground in village watermills to preserve the nutrient-rich bran, vital iron, and high natural calcium. Makes deeply satisfying, dark, rustic flatbreads (Kodo ko Roti) and traditional dhido.",
     "category": "Grain",
     "price": "₹160",
     "weight": "500g pack",
     "image": "/products/millet-powder-roti.png",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,100m – 1,800m",
     "harvestSeason": "October – November",
+    "tagline": "Traditional stone-ground finger millet flour for soft, wholesome mountain rotis.",
+    "description": "Milled from 100% organic Himalayan finger millet (Kodo) grown on sun-drenched hill terraces in West Sikkim. Slowly stone-ground in village watermills to preserve the nutrient-rich bran, vital iron, and high natural calcium. Makes deeply satisfying, dark, rustic flatbreads (Kodo ko Roti) and traditional dhido.",
     "tastingNotes": [
       "Toasted nutty malt",
       "Rich mineral depth",
@@ -194,24 +196,24 @@
       "Gundruk ko jhol",
       "Dalle chilli chutney"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5AxxukOUQy1dh"
+    "razorpayItemId": "item_U5AxxukOUQy1dh",
+    "active": true
   },
   {
     "slug": "pumpkin-seeds",
     "name": "Pumpkin Seeds",
     "localName": "Pharsi ko Geda · फर्सीको गेडा",
-    "tagline": "Sun-dried seeds from native sweet red mountain pumpkins.",
-    "description": "West Sikkim's deep valleys yield sweet, dense mountain pumpkins that store well through freezing winters. Their plump seeds are scooped out, washed in clear spring water, and sun-dried on wide bamboo mats. Packed with natural plant sterols, zinc, magnesium, and restorative fats.",
     "category": "Seed",
     "price": "₹140",
     "weight": "100g pack",
     "image": "/products/pumpkin-seeds.jpg",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,100m – 1,700m",
     "harvestSeason": "November – January",
+    "tagline": "Sun-dried seeds from native sweet red mountain pumpkins.",
+    "description": "West Sikkim's deep valleys yield sweet, dense mountain pumpkins that store well through freezing winters. Their plump seeds are scooped out, washed in clear spring water, and sun-dried on wide bamboo mats. Packed with natural plant sterols, zinc, magnesium, and restorative fats.",
     "tastingNotes": [
       "Buttery crunch",
       "Toasted sunflower undertone",
@@ -227,24 +229,24 @@
       "Morning porridge",
       "Trail snacks"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5Axz6lnRAWSPZ"
+    "razorpayItemId": "item_U5Axz6lnRAWSPZ",
+    "active": true
   },
   {
     "slug": "maize-corn-makai",
     "name": "Maize (Corn) Seed & Powder",
     "localName": "Makai · मकै (Himalayan Native Corn)",
-    "tagline": "Native mountain hill corn — stone-ground coarse meal and whole sun-dried kernels.",
-    "description": "Grown naturally on terraced hill slopes across West Sikkim. Non-hybrid, chemical-free mountain maize is slow-ripened in Himalayan sun and hand-shelled. Rich in dietary fibre, natural carotenoids, and sweet earthy corn flavour. Available as sun-dried whole kernels for trail roasting or traditional village stone-ground meal for rotis and dhido.",
     "category": "Grain",
     "price": "₹190",
     "weight": "500g pack",
     "image": "/products/maize-corn-makai.png",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,100m – 1,700m",
     "harvestSeason": "August – October",
+    "tagline": "Native mountain hill corn — stone-ground coarse meal and whole sun-dried kernels.",
+    "description": "Grown naturally on terraced hill slopes across West Sikkim. Non-hybrid, chemical-free mountain maize is slow-ripened in Himalayan sun and hand-shelled. Rich in dietary fibre, natural carotenoids, and sweet earthy corn flavour. Available as sun-dried whole kernels for trail roasting or traditional village stone-ground meal for rotis and dhido.",
     "tastingNotes": [
       "Sweet roasted grain",
       "Toasted polenta aroma",
@@ -260,24 +262,24 @@
       "Fresh churned butter",
       "Dalle chilli momo chutney"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5Ay0Jm1qCQwfZ"
+    "razorpayItemId": "item_U5Ay0Jm1qCQwfZ",
+    "active": true
   },
   {
     "slug": "black-gram-kalo-dal",
     "name": "Whole Black Gram (Kalo Dal)",
     "localName": "Kalo Dal · कालो दाल (Himalayan Black Urad)",
-    "tagline": "Unpolished mountain whole black gram — earthy, rich, and slow-simmered.",
-    "description": "Hand-harvested from terraced hillside plots in West Sikkim. Unpolished and completely untreated, Himalayan whole black gram develops an intense, velvety broth when slow-cooked over a wood fire. Exceptionally rich in dietary iron, potassium, and plant protein.",
     "category": "Legume",
     "price": "₹210",
     "weight": "500g pack",
     "image": "/products/black-gram-kalo-dal.png",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,200m – 1,700m",
     "harvestSeason": "October – December",
+    "tagline": "Unpolished mountain whole black gram — earthy, rich, and slow-simmered.",
+    "description": "Hand-harvested from terraced hillside plots in West Sikkim. Unpolished and completely untreated, Himalayan whole black gram develops an intense, velvety broth when slow-cooked over a wood fire. Exceptionally rich in dietary iron, potassium, and plant protein.",
     "tastingNotes": [
       "Deep earthy aroma",
       "Creamy velvet broth",
@@ -293,24 +295,24 @@
       "Village ghee",
       "Millet flatbreads"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5Ay1WiZPqd5Xo"
+    "razorpayItemId": "item_U5Ay1WiZPqd5Xo",
+    "active": true
   },
   {
     "slug": "rice-beans-masyang",
     "name": "Rice Beans (Masyang / Mashem)",
     "localName": "Masyang · मस्याङ / मासेम (Indigenous Rice Beans)",
-    "tagline": "Prized heirloom mountain pulse — buttery sweet, tender, and easily digestible.",
-    "description": "Masyang is an indigenous hill legume cultivated for generations on West Sikkim terraces. Small, cylindrical, and speckled golden-green. Exceptionally easy to digest compared to standard plains lentils, with a remarkably sweet, buttery mouthfeel. A cherished village comfort staple during winter months.",
     "category": "Legume",
     "price": "₹250",
     "weight": "500g pack",
     "image": "/products/rice-beans-masyang.png",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,200m – 1,800m",
     "harvestSeason": "November – January",
+    "tagline": "Prized heirloom mountain pulse — buttery sweet, tender, and easily digestible.",
+    "description": "Masyang is an indigenous hill legume cultivated for generations on West Sikkim terraces. Small, cylindrical, and speckled golden-green. Exceptionally easy to digest compared to standard plains lentils, with a remarkably sweet, buttery mouthfeel. A cherished village comfort staple during winter months.",
     "tastingNotes": [
       "Sweet nutty broth",
       "Soft melting skin",
@@ -326,24 +328,24 @@
       "Dalle chilli chutney",
       "Gundruk sadeko"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5Ay2jaOym7FUt"
+    "razorpayItemId": "item_U5Ay2jaOym7FUt",
+    "active": true
   },
   {
     "slug": "green-gram-hariyo-mung",
     "name": "Whole Green Gram (Hariyo Mung)",
     "localName": "Hariyo Mung · हरियो मूंग (Sabut Moong)",
-    "tagline": "Terrace-cultivated whole green moong — pure, restorative, and nutrient-dense.",
-    "description": "Grown in chemical-free hill terraces in West Sikkim. Tiny, unpolished emerald grains with intact, nutrient-dense outer skins. Ideal for sprouting into crisp micro-greens or simmering into light, restorative mountain broths. Naturally packed with plant proteins, folate, and antioxidants.",
     "category": "Legume",
     "price": "₹310",
     "weight": "500g pack",
     "image": "/products/green-gram-hariyo-mung.png",
+    "giTag": false,
     "organic": true,
     "featured": true,
     "altitude": "1,000m – 1,600m",
     "harvestSeason": "October – November",
+    "tagline": "Terrace-cultivated whole green moong — pure, restorative, and nutrient-dense.",
+    "description": "Grown in chemical-free hill terraces in West Sikkim. Tiny, unpolished emerald grains with intact, nutrient-dense outer skins. Ideal for sprouting into crisp micro-greens or simmering into light, restorative mountain broths. Naturally packed with plant proteins, folate, and antioxidants.",
     "tastingNotes": [
       "Clean grassy sweetness",
       "Light nutty crunch",
@@ -359,9 +361,8 @@
       "Fresh mountain curd",
       "Local village pickles"
     ],
-    "active": true,
-    "giTag": false,
-    "razorpayItemId": "item_U5Ay3wCwvPcmbQ"
+    "razorpayItemId": "item_U5Ay3wCwvPcmbQ",
+    "active": true
   },
   {
     "slug": "turmeric",

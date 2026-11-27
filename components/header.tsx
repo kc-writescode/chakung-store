@@ -40,7 +40,7 @@ export function Header() {
             Enquiries
           </a>
           <a
-            href="https://chakung.com"
+            href="https://www.chakung.com/stay/chakung-bamboo-homestay"
             target="_blank"
             rel="noopener noreferrer"
             className="store-homestay-link"
