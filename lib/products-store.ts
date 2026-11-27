@@ -261,25 +261,41 @@ export function parseRazorpayItem(item: any): StoredProduct | null {
   };
 }
 
+export interface RazorpayFetchResult {
+  ok: boolean;
+  items: any[];
+}
+
 /**
- * Fetch all Razorpay items tagged with [chakung:...]
+ * Fetch all Razorpay items and expose whether the API call succeeded cleanly.
  */
-export async function fetchRazorpayItems(): Promise<any[]> {
+export async function fetchRazorpayItemsWithStatus(): Promise<RazorpayFetchResult> {
   const auth = getRazorpayAuth();
-  if (!auth) return [];
+  if (!auth) return { ok: false, items: [] };
 
   try {
     const res = await fetch("https://api.razorpay.com/v1/items?count=100", {
       headers: { Authorization: auth },
       cache: "no-store",
     });
-    if (!res.ok) return [];
+    if (!res.ok) return { ok: false, items: [] };
     const data = await res.json();
-    return Array.isArray(data.items) ? data.items : [];
+    return {
+      ok: true,
+      items: Array.isArray(data.items) ? data.items : [],
+    };
   } catch (err) {
     console.error("Error fetching Razorpay items:", err);
-    return [];
+    return { ok: false, items: [] };
   }
+}
+
+/**
+ * Fetch all Razorpay items tagged with [chakung:...]
+ */
+export async function fetchRazorpayItems(): Promise<any[]> {
+  const res = await fetchRazorpayItemsWithStatus();
+  return res.items;
 }
 
 /**
@@ -373,11 +389,11 @@ export async function syncProductToRazorpay(product: StoredProduct): Promise<str
 
 /**
  * Returns all active products.
- * Merges local file store (seeded with initial static products) with any Razorpay Item overrides.
- * Strictly excludes any product in deletedSlugs.
+ * Merges local file store (seeded with initial static products) with live Razorpay catalog.
+ * Authoritatively synchronizes deletions across serverless instances using Razorpay items state.
  */
 export async function getAllProducts(includeInactive = false): Promise<StoredProduct[]> {
-  const deletedSlugs = getDeletedSlugs();
+  let deletedSlugs = getDeletedSlugs();
 
   let local = readLocalProducts();
   if (!local || local.length === 0) {
@@ -385,47 +401,67 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
     writeLocalProducts(local);
   }
 
-  // Filter out deleted items from local
-  local = local.filter((p) => !deletedSlugs.has(p.slug));
+  // Fetch Razorpay items to sync and persist cloud state across serverless containers
+  const rzpRes = await fetchRazorpayItemsWithStatus();
 
-  // Fetch Razorpay items to sync and persist cloud state
-  const rzpItems = await fetchRazorpayItems();
-  if (rzpItems.length > 0) {
-    const bySlug = new Map<string, StoredProduct>();
-    for (const p of local) {
-      if (!deletedSlugs.has(p.slug)) {
-        bySlug.set(p.slug, p);
-      }
-    }
+  if (rzpRes.ok) {
+    const rzpParsedBySlug = new Map<string, { item: any; parsed: StoredProduct }>();
+    const rzpItemIds = new Set<string>();
+    const tombstonedSlugs = new Set<string>();
 
-    for (const rzpItem of rzpItems) {
-      // Check if this item is marked as DELETED
+    for (const rzpItem of rzpRes.items) {
+      if (rzpItem?.id) rzpItemIds.add(rzpItem.id);
       const desc = rzpItem.description || "";
       if (desc.includes("[chakung:DELETED:")) {
         const m = desc.match(/\[chakung:DELETED:([^\]]+)\]/);
         if (m && m[1]) {
           const dSlug = m[1].trim();
+          tombstonedSlugs.add(dSlug);
           recordDeletedSlug(dSlug);
-          bySlug.delete(dSlug);
         }
         continue;
       }
 
       const parsed = parseRazorpayItem(rzpItem);
-      if (!parsed || !parsed.slug) continue;
-      if (deletedSlugs.has(parsed.slug)) continue;
+      if (parsed && parsed.slug) {
+        rzpParsedBySlug.set(parsed.slug, { item: rzpItem, parsed });
+        // An active item in Razorpay overrides stale local deleted-slugs cache (e.g. if re-added via staff portal)
+        if (parsed.active !== false && deletedSlugs.has(parsed.slug)) {
+          unrecordDeletedSlug(parsed.slug);
+          deletedSlugs = getDeletedSlugs();
+        }
+      }
+    }
 
-      const existing = bySlug.get(parsed.slug);
+    const rzpChakungCount = rzpParsedBySlug.size;
+    const bySlug = new Map<string, StoredProduct>();
+
+    for (const p of local) {
+      if (tombstonedSlugs.has(p.slug)) continue;
+
+      const rzpMatch = rzpParsedBySlug.get(p.slug);
+      if (!rzpMatch) {
+        // If product is absent from live Razorpay catalog AND had already been synced to Razorpay
+        // (while Razorpay holds active Chakung items), it was deleted via staff portal on another instance.
+        if (rzpChakungCount > 0 && p.razorpayItemId && !rzpItemIds.has(p.razorpayItemId)) {
+          recordDeletedSlug(p.slug);
+          if (inMemoryProducts) {
+            inMemoryProducts = inMemoryProducts.filter((m) => m.slug !== p.slug);
+          }
+          continue;
+        }
+        if (deletedSlugs.has(p.slug)) continue;
+      }
+
+      bySlug.set(p.slug, p);
+    }
+
+    for (const [slug, { item: rzpItem, parsed }] of rzpParsedBySlug.entries()) {
+      if (tombstonedSlugs.has(slug)) continue;
+      if (deletedSlugs.has(slug) && parsed.active === false) continue;
+
+      const existing = bySlug.get(slug);
       if (existing) {
-        // Determine which source is fresher.
-        // - `existing` = from committed data/products.json (original seed data, no updatedAt)
-        //   OR from /tmp if the same serverless container handled a previous save (has updatedAt).
-        // - `parsed`   = from Razorpay metadata (always reflects the LATEST staff-portal save,
-        //   because saveProduct() PATCHes Razorpay with the full product payload including updatedAt).
-        //
-        // Rule: whichever source has the NEWER updatedAt wins for ALL fields (name, price, description,
-        // tagline, image, etc.).  Seed products have no updatedAt, so Razorpay always wins for them
-        // once any staff edit has been made.
         const existingTs = existing.updatedAt || "";
         const parsedTs =
           parsed.updatedAt ||
@@ -433,33 +469,32 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
 
         const rzpIsNewer = parsedTs && (!existingTs || parsedTs > existingTs);
 
-        // Merge: the NEWER source's fields take precedence over the OLDER source's fields.
         const merged = rzpIsNewer
-          ? { ...existing, ...parsed }   // Razorpay wins  (staff made a more recent edit)
-          : { ...parsed,   ...existing }; // Local wins     (dev environment / just-written /tmp)
+          ? { ...existing, ...parsed }
+          : { ...parsed, ...existing };
 
-        // Image: use the winning source, fall back to the other if empty.
         const resolvedImage = rzpIsNewer
-          ? (parsed.image   || existing.image || "")
-          : (existing.image || parsed.image   || "");
+          ? (parsed.image || existing.image || "")
+          : (existing.image || parsed.image || "");
 
-        bySlug.set(parsed.slug, {
+        bySlug.set(slug, {
           ...merged,
           image: resolvedImage,
-          // razorpayItemId is always authoritative from Razorpay itself
           razorpayItemId: rzpItem.id || existing.razorpayItemId,
           active: existing.active !== undefined ? existing.active : parsed.active,
-          // Carry the most recent timestamp forward so future merges keep comparing correctly
           updatedAt: parsedTs && existingTs
             ? (parsedTs > existingTs ? parsedTs : existingTs)
             : (parsedTs || existingTs || undefined),
         });
       } else if (parsed.active !== false) {
-        bySlug.set(parsed.slug, parsed);
+        bySlug.set(slug, parsed);
       }
     }
 
+    deletedSlugs = getDeletedSlugs();
     local = Array.from(bySlug.values()).filter((p) => !deletedSlugs.has(p.slug));
+  } else {
+    local = local.filter((p) => !deletedSlugs.has(p.slug));
   }
 
   return includeInactive
@@ -469,10 +504,8 @@ export async function getAllProducts(includeInactive = false): Promise<StoredPro
 
 export async function getProductBySlug(slug: string): Promise<StoredProduct | undefined> {
   if (!slug) return undefined;
-  const deletedSlugs = getDeletedSlugs();
-  if (deletedSlugs.has(slug)) return undefined;
-
   const all = await getAllProducts(false);
+  const deletedSlugs = getDeletedSlugs();
   const found = all.find((p) => p.slug === slug);
   if (!found || found.active === false || deletedSlugs.has(found.slug)) {
     return undefined;
@@ -526,11 +559,12 @@ export async function saveProduct(
 export async function deleteProduct(slug: string): Promise<boolean> {
   if (!slug) return false;
 
-  // Immediately record slug in persistent deleted registry
-  recordDeletedSlug(slug);
-
+  // Resolve target (including razorpayItemId) BEFORE recording slug in deletedSlugs
   const all = await getAllProducts(true);
   const target = all.find((p) => p.slug === slug);
+
+  // Immediately record slug in persistent deleted registry
+  recordDeletedSlug(slug);
 
   // Remove from in-memory cache
   if (inMemoryProducts) {

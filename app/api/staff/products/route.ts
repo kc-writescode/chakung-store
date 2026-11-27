@@ -135,6 +135,7 @@ export async function POST(request: Request) {
       revalidatePath(`/${saved.slug}`, "page");
       revalidatePath(`/${saved.slug}`, "layout");
       revalidatePath("/staff", "page");
+      revalidatePath("/api/products");
     } catch {}
     return NextResponse.json({ success: true, product: saved });
   } catch (err: any) {
@@ -219,6 +220,7 @@ export async function PATCH(request: Request) {
       revalidatePath(`/${saved.slug}`, "page");
       revalidatePath(`/${saved.slug}`, "layout");
       revalidatePath("/staff", "page");
+      revalidatePath("/api/products");
     } catch {}
     return NextResponse.json({ success: true, product: saved });
   } catch (err: any) {
@@ -257,6 +259,7 @@ export async function DELETE(request: Request) {
       revalidatePath(`/${slug}`, "page");
       revalidatePath(`/${slug}`, "layout");
       revalidatePath("/staff", "page");
+      revalidatePath("/api/products");
     } catch {}
     return NextResponse.json({ success: true, slug });
   } catch (err: any) {

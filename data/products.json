@@ -363,39 +363,5 @@
     ],
     "razorpayItemId": "item_U5Ay3wCwvPcmbQ",
     "active": true
-  },
-  {
-    "slug": "turmeric",
-    "name": "Turmeric (Besar)",
-    "localName": "Besar · बेसार (Himalayan Turmeric)",
-    "category": "Spice",
-    "price": "₹220",
-    "weight": "250g pack",
-    "image": "/products/turmeric-besar.jpg",
-    "giTag": false,
-    "organic": true,
-    "featured": true,
-    "altitude": "1,200m – 1,800m",
-    "harvestSeason": "October – December",
-    "tagline": "Pure West Sikkim mountain turmeric — vibrant golden colour and high curcumin content.",
-    "description": "Cultivated on organic terraced slopes in West Sikkim. Sun-dried and slow-milled to retain essential oils and curcumin. A fragrant, earthy staple of Sikkimese mountain cuisine and traditional wellness.",
-    "tastingNotes": [
-      "Vibrant earthy aroma",
-      "Warm pepper undertone",
-      "Golden mountain hue"
-    ],
-    "traditionalUses": [
-      "Traditional kitchen tempering for dals, vegetable curries, and bone broths",
-      "Warm golden turmeric milk (Haldi doodh) with mountain honey",
-      "Aromatic seasoning in fermented gundruk and fresh vegetable stir-fries"
-    ],
-    "pairingSuggestions": [
-      "Steamed mountain rice",
-      "Dalle chilli momo chutney",
-      "Warm mountain milk with raw honey"
-    ],
-    "razorpayItemId": "item_U5AsD1PtpYIxtT",
-    "active": true,
-    "updatedAt": "2026-11-27T11:37:51.114Z"
   }
 ]
